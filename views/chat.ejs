@@ -1,0 +1,436 @@
+<%- include('partials/header.ejs') %>
+
+
+<style>
+    #back-button{
+        position: fixed;
+        z-index: 1;
+    }
+
+    #back-button button{
+        color: white;
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+        padding: 20px 0 0 20px;
+    }
+
+    #header{
+        position: fixed;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #40164b;     
+        width: 100%;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    }
+
+    #header h1{
+        width: max-content;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    #messages{
+        /* overflow: scroll; */
+        padding: 100px 0 0px 0;
+    }
+
+    #bottomChat{
+        padding: 0 0 200px 0;
+        /* background-color: rgb(180, 12, 12); */
+    }
+
+    #is-typing p{
+        background-color: rgb(75, 75, 75);
+        padding: 10px;
+        width: max-content;
+        max-width: 80%;
+        border-radius: 15px 15px 15px 0px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+
+    .chat-left{
+        padding: 0 0 0 50px;
+    }
+
+    @media (max-width: 720px) {
+        .chat-left{
+            padding: 0 0 0 10px;
+            font-size: 14px;
+        }
+    }
+
+    .chat-left p{
+        background-color: rgb(75, 75, 75);
+        padding: 10px;
+        width: max-content;
+        max-width: 80%;
+        border-radius: 15px 15px 15px 0px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+
+    @media  (min-width: 1366px) {
+        .chat-left p{
+            background-color: rgb(75, 75, 75);
+            padding: 10px;
+            width: max-content;
+            max-width: 60%;
+            border-radius: 15px 15px 15px 0px;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        }
+    }
+
+    .chat-right{
+        display: flex;
+        justify-content: right;
+        padding: 0 50px 0 0;
+    }
+
+    @media (max-width: 720px) {
+        
+        .chat-right{
+            display: flex;
+            justify-content: right;
+            padding: 0 10px 0 0;
+            font-size: 14px;
+        }
+
+    }
+
+    .chat-right p{
+        background-color: rgba(165, 42, 42, 0.397);
+        padding: 10px;
+        width: max-content;
+        max-width: 80%;
+        border-radius: 15px 15px 0px 15px;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+    }
+
+    @media  (min-width: 1366px) {
+        .chat-right p{
+            background-color: rgba(165, 42, 42, 0.397);
+            padding: 10px;
+            width: max-content;
+            max-width: 60%;
+            border-radius: 15px 15px 0px 15px;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        }
+    }
+
+    #time{
+        font-size: 10px;
+        padding-left: 10px;
+    }
+
+    #send-message{
+        /* background-color: rgba(85, 28, 99, 0.753); */
+        background-color: #40164b;
+        position: fixed;
+        bottom: 0;
+        padding-bottom: 70px;
+        padding-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+    }
+
+    #send-message textarea{
+        padding: 5px;
+        border: none;
+        border-radius: 10px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        width: 80%;
+    }
+
+    @media  (min-width: 1366px) {
+        #send-message textarea{
+            padding: 5px;
+            border: none;
+            border-radius: 10px;
+            width: 600px;
+        }
+    }
+
+    #send-message button{
+        color: rgb(165, 42, 42);
+        background-color: wheat;
+        border-radius: 50%;
+        border: none;
+        padding: 5px 10px;
+        margin-left: 10px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+
+    #send-message button:hover{
+        background-color: #301038;
+        color: wheat;
+        rotate: 40deg;
+        transition: 500ms;
+    }
+
+</style>
+
+
+<span id="back-button">
+    <button onclick='window.location.href = "/messages";'><h1><</h1></button>
+</span>
+
+
+
+<div id="header">
+    <a href="/profile/<%= recipientData.username %>" style="text-decoration: none; color: white;">
+        <h1> <%= recipientData.username %> <i class="fa-regular fa-comment fa-solid fa-sm"></i></h1>
+    </a>
+</div>
+
+
+<br>
+
+<div id="messages">
+
+</div>
+
+<div id="bottomChat">
+    <div class="chat-left" id="is-typing"></div>
+</div>
+
+<a name="chat" id="chat"></a>
+
+
+<div id="send-message">
+    <textarea id="message" name="message" type="text" placeholder=" Message" cols="0" rows="1"></textarea>
+    <button id="send"><i class="fa-solid fa-paper-plane"></i></button>
+</div>
+
+                
+
+
+<div id="fixed-tab">
+    <a href="/home"><i class="fa-solid fa-house tab-icon"></i></a> 
+    <a href="/discover"><i class="fa-solid fa-magnifying-glass tab-icon"></i></a>
+    <a href="/upload"><i class="fa-solid fa-upload tab-icon"></i></a>
+    <a href="/messages"><i class="fa-solid fa-comment tab-icon" style="color: rgb(182, 70, 70);"></i></a>
+    <a href="/profile/<%= senderData.username %>"><i class="fa-regular fa-user tab-icon"></i></a>
+</div>
+
+
+
+<!-- Hidden Inputs for Front-End -->
+<input id="chatId" type="hidden" value="<%=wssConnect%>">
+<input id="senderId" type="hidden" name="senderId" value="<%= senderData._id %>">
+<input id="senderName" type="hidden" name="senderName" value="<%= senderData.username %>">
+<input id="recipientId" type="hidden" name="recipientId" value="<%= recipientData._id %>">
+<input id="recipientName" type="hidden" name="recipientName" value="<%= recipientData.username %>">
+
+
+<!-- Hidden Inputs for Back-End -->
+
+<input id="senderData" value="<%=senderData%>" type="hidden">
+<input id="recipientData" value="<%=recipientData%>" type="hidden">
+
+
+
+
+<script>
+
+function scrollDown() {
+        window.location = "#chat";
+    };
+
+function jumpToBottom() {
+    setTimeout(() => {
+        $("html, body").animate({ 
+                    scrollTop: $( 
+                      'html, body').get(0).scrollHeight 
+                }, 0); 
+    }, 400); 
+}
+
+// jumpToBottom()
+// window.scrollTo(0,document.body.scrollHeight);
+// window.onpageshow = scrollDown()
+
+const chatId = (document.getElementById("chatId")).value;
+
+// Query DOM
+const output = document.getElementById('chat');
+const btn = document.getElementById('send')
+const form = document.getElementById("formId");
+const isTyping = document.getElementById("is-typing");
+
+// Query Message Information
+const senderId = document.getElementById('senderId');
+const senderName = document.getElementById('senderName');
+const recipientId = document.getElementById('recipientId');
+const recipientName = document.getElementById('recipientName');
+const message = document.getElementById('message');
+
+// Query Information for Backend
+const senderData = document.getElementById('senderData').value;
+const recipientData = document.getElementById('recipientData').value;
+// const chatId = (document.getElementById("chatId")).value; (already called above)
+
+console.log(recipientId.value)
+
+// Make Connection
+const socket = io.connect(window.location.origin, {
+    transports: ["websocket","webtransport"],
+    addTrailingSlash: false,
+});
+
+// join room 
+socket.emit("chat-room", chatId);
+
+// function to change last message status to read 
+function readChat(params) {
+    socket.emit('read-chat', {
+        chat: chatId,
+        recipient: recipientId.value,
+    })
+};
+readChat()
+
+
+// Emit Chat Data to Socket Backend
+socket.emit(chatId, {
+    id: chatId,
+    sender: senderData,
+    recipient: recipientData,
+})
+
+// Emit Events
+
+
+// function to emit message to the backEnd 
+function sendMessage(){
+        if (message.value.length !== 0 ) {
+        socket.emit('chat', {
+            room: chatId,
+            senderId: senderId.value,
+            senderName: senderName.value,
+            recipientId: recipientId.value,
+            recipientName: recipientName.value,
+            message: message.value,
+        });
+
+        document.getElementById('messages').innerHTML += 
+            `<div id="db-chat" class="db-chat chat-right" style="text-align: right;">
+                    <p>
+                        ${message.value}   
+                    </p>
+            </div>`;
+        jumpToBottom();
+        message.value = "";
+        message.style = "";
+    }
+}
+// function to prevent enter in text 
+message.addEventListener('keypress', function(event){
+    if (event.charCode === 13) {
+        event.preventDefault()
+    }
+});
+// adding eventslisteners to send button and enter key 
+btn.addEventListener('click', function(){
+    sendMessage();
+});
+document.addEventListener('keypress', function(event) {
+    if (event.key==='Enter') {
+        sendMessage();
+        message.value = "";
+    }
+});
+
+
+
+// Emit Chat data (this time through the websocket)
+socket.on(chatId, function(data) {
+
+    (data.messages).forEach(message => {
+        const textLeft = 
+        `<div id="db-chat" class="db-chat chat-left" style="text-align: left;">
+            <p>
+                 ${message.text}   
+            </p>
+        </div>`
+
+        const textRight = 
+        `<div id="db-chat" class="db-chat chat-right" style="text-align: right;">
+            <p>
+                 ${message.text}   
+            </p>
+        </div>`
+        if (message.authorId===senderId.value) {
+            document.getElementById('messages').innerHTML += textRight;
+        } else {
+            document.getElementById('messages').innerHTML += textLeft;
+        };
+
+        // window.location = "#chat"
+        jumpToBottom()
+        
+    });
+
+})
+
+// To scroll to the bottom of a div
+
+message.addEventListener('keyup', function(key){
+    socket.emit('typing', {room: chatId, typer: senderName.value, char: message.value});
+    // document.getElementByTagName('button').setAttribute("id", "hello")
+})
+
+
+// Listening for emit 
+socket.on('message', function(data){
+    document.getElementById('messages').innerHTML += 
+    `<div id="db-chat" class="db-chat chat-left" style="text-align: left;">
+            <p>
+                    ${data.message}
+            </p>
+    </div>`
+
+    isTyping.innerHTML = "";
+    jumpToBottom();
+    readChat()
+
+});
+
+socket.on('disconnect', function(){
+    socket.emit('disconeected',{
+        text: "disconnected"
+    })
+    console.log("user that disconnected:" + socket.id);
+});
+
+socket.on('typing', function(data){
+
+    document.getElementById('is-typing').innerHTML =
+            
+            `<p><em>typing...</em></p>`
+
+        setTimeout(() => {
+            isTyping.innerHTML = ""
+        },  5000);   
+
+    if (data.char==="") {
+        isTyping.innerHTML = ""
+    };
+
+});
+
+
+let textArea = document.querySelector("textarea")
+
+textArea.addEventListener("input", () => {
+    textArea.style.height = "auto"
+    textArea.style.height = textArea.scrollHeight + "px"
+})
+</script>
+
+</body>
+</html>
+
