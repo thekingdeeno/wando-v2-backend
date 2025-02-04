@@ -1,4 +1,4 @@
- // @ts-nocheck 
+
 import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
@@ -64,7 +64,7 @@ mongoose.connect(`mongodb+srv://deeno:${process.env.MONGODB_PASSWORD}@cluster0.z
 const useSocket = require("./socket");
 useSocket()
 
-}).catch(err=>{
+}).catch((err: any)=>{
     console.log(err);
 });
 
@@ -77,7 +77,7 @@ useSocket()
 // passport.serializeUser(User.serializeUser());
 // passport.deserializeUser(User.deserializeUser());
 
-passport.serializeUser(function(user, cb) {
+passport.serializeUser(function(user: any, cb: any) {
     process.nextTick(function() {
       return cb(null, {
         id: user.id,
@@ -88,7 +88,7 @@ passport.serializeUser(function(user, cb) {
     });
   });
   
-  passport.deserializeUser(function(user, cb) {
+  passport.deserializeUser(function(user: any, cb: (arg0: null, arg1: any) => any) {
     process.nextTick(function() {
       return cb(null, user);
     });
@@ -106,11 +106,11 @@ passport.use(new GoogleStrategy({
     callbackURL: "https://wando.onrender.com/auth/google/wando",
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
     },
-    function(accessToken, refreshToken, profile, cb) {
-        User.findOrCreate({ googleId: profile.id }, function (err, user) {
+    function(accessToken: any, refreshToken: any, profile: { id: any; name: { givenName: any; }; }, cb: (arg0: any, arg1: any) => any) {
+        User.findOrCreate({ googleId: profile.id }, function (err: any, user: { username: string; save: () => void; }) {
 
                 // function to set a default app username
-          User.find({username: profile.name.givenName}).then(function(found) {
+          User.find({username: profile.name.givenName}).then(function(found: string | any[]) {
             if (user.username) {
               console.log("this account has already been registered and has a username")
             }else{
@@ -139,11 +139,11 @@ passport.use(new FacebookStrategy({
     clientSecret: process.env.FACEBOOK_APP_SECRET,
     callbackURL: "https://wando.onrender.com/auth/facebook/wando"
   },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+  function(accessToken: any, refreshToken: any, profile: { id: any; displayName: any; }, cb: (arg0: any, arg1: any) => any) {
+    User.findOrCreate({ facebookId: profile.id }, function (err: any, user: { username: string; save: () => void; }) {
 
       // function to set a default app username
-      User.find({username: (profile.displayName).split(" ")[0]}).then(function(found){
+      User.find({username: (profile.displayName).split(" ")[0]}).then(function(found: string | any[]){
         if(user.username){
           console.log("this account has already been registered and has an username")
         }else{
@@ -173,11 +173,11 @@ passport.use(new TwitterStrategy({
     callbackURL: "https://wando.onrender.com/auth/twitter/wando"
   },
   
-  function(token, tokenSecret, profile, cb) {
-    User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+  function(token: any, tokenSecret: any, profile: { id: any; _json: { screen_name: any; }; }, cb: (arg0: any, arg1: any) => any) {
+    User.findOrCreate({ twitterId: profile.id }, function (err: any, user: { username: string; save: () => void; }) {
 
       // function to set a default app username
-      User.find({username: profile._json.screen_name}).then(function(found){
+      User.find({username: profile._json.screen_name}).then(function(found: string | any[]){
         if (user.username) {
           console.log("this account has already been registered and has an username")
         } else {
@@ -210,8 +210,8 @@ passport.use(new TiktokStrategy({
   scope: ['user.info.basic'],
   callbackURL: "https://wando.onrender.com/auth/tiktok/wando"
 },
-function(accessToken, refreshToken, profile, done) {
-  User.findOrCreate({ tiktokId: profile.id }, function (err, user) {
+function(accessToken: any, refreshToken: any, profile: { id: any; }, done: (arg0: any, arg1: any) => any) {
+  User.findOrCreate({ tiktokId: profile.id }, function (err: any, user: any) {
       return done(err, user);
   });
 }
@@ -232,22 +232,22 @@ app.use('/auth', authRoute);
 
 
 // Root - Route
-app.get("/", function(req, res){
-    res.sendFile(`${__dirname}/index.html`);
+app.get("/", function(req: any, res:any){
+    res.send(`wando app working`);
 });
 
 // Privacy Policy
-app.get("/policy", function(req, res){
+app.get("/policy", function(req: any, res:any){
   res.sendFile(`${__dirname}/policy.html`)
 })
 
 // Terms
-app.get("/terms", function(req, res){
+app.get("/terms", function(req: any, res:any){
   res.sendFile(`${__dirname}/terms.html`)
 })
 
 // Register Route
-app.get("/register", function(req, res){
+app.get("/register", function(req: any, res: any){
     res.render('register');
 });
 
@@ -293,10 +293,3 @@ app.use('/profileedit', profileEditRoute);
 // Discover Route
 const discoverRoute = require('./routes/discover');
 app.use('/discover', discoverRoute);
-
-
-
-
-// -------------- Testing Area (begining) ------------------
-
-//--------------- Testing Area (ending) --------------------
