@@ -1,4 +1,5 @@
-require("dotenv").config();
+// @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -21,47 +22,36 @@ const router = express.Router();
 
 
 router.get('/', function(req, res){
-
-    if (req.isAuthenticated()) {
-      async function render(){
-
-      const thisUser = await User.findById((req.user).id)
-
-        res.render('upload',{
-          username: thisUser.username
-        })        
-      }
-      render();
-
-    } else {
-      res.redirect('register');
+    if (req.isAuthenticated()){
+      Chat.find({"users.userId": (req.user).id,"messages": {$exists: true,$not: {$size: 0}}}).then(function(foundChats){
+  
+      User.findById((req.user).id).then((found) =>{
+        res.render('messages', {
+          myObjId: found._id,
+          myId: (req.user).id,
+          myUsername: found.username,
+          chats: foundChats,
+        });            
+      });
+  
+  
+      }).catch(err=>{
+        console.log(err);
+      });
+  
+    }else{
+      res.redirect('/register')
     };
   });
   
-router.post('/', function(req, res){
+  router.post('/', function(req, res){
+    User.find({username: req.body.search}).then(function(searchResult){
   
-  
-  
-    User.findById((req.user).id).then(function(foundUser){
-      const post = new Post({
-      title: req.body.title,
-      content: req.body.content,
-      authorId: (req.user).id,
-      authorUsername: foundUser.username,
+      res.render('chatsearchresult',{
+        foundUser : searchResult,
+      });
     });
-  
-      post.save().then(function(){
-        res.redirect('/home');
-      }).catch(err=>{
-        console.log(err);
-      })
-      foundUser.posts.push(post._id);
-      foundUser.save();
-  
-    });
-    
-    
-  
   });
+
 
   module.exports = router;

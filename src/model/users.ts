@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
-const findOrCreate = require('mongoose-findorcreate');
+import mongoose from 'mongoose';
+// import findOrCreate from 'mongoose-findorcreate';
 const { Schema, SchemaTypes, model } = mongoose;
 const passportLocalMongoose = require('passport-local-mongoose');
 
 
-const userSchema = new mongoose.Schema ({
+const userSchema = new Schema ({
     email: String, // User login email (formerly "username")
     username: String, // Username (formerly "username")
     fullname: String,
@@ -46,8 +46,8 @@ const userSchema = new mongoose.Schema ({
 });
 
 userSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
-userSchema.plugin(findOrCreate);
-const User = new mongoose.model('User', userSchema);
+// userSchema.plugin(findOrCreate);
+const User = model('User', userSchema);
 
 
-module.exports = User;
+export default User;

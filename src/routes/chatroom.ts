@@ -1,3 +1,4 @@
+ // @ts-nocheck 
 require("dotenv").config();
 const express = require('express');
 const socket = require('socket.io');

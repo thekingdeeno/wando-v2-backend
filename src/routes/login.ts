@@ -1,3 +1,4 @@
+ // @ts-nocheck 
 require("dotenv").config();
 const express = require('express');
 const socket = require('socket.io');
@@ -19,29 +20,27 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 // routing func setup
 const router = express.Router();
 
-// to access server for socket.io 
-const server = require('../app')
-
 
 router.get('/', function(req, res){
-    if (req.isAuthenticated()) {
-    async function discover(){
-        const thisUser = await User.findById((req.user).id)
-        res.render('discover',{
-            thisUser: thisUser.username
-        })        
-    }
-
-    discover()
-
-    } else {
-        res.redirect('register');
-    }
-
-})
+    res.send('login');
+});
 
 router.post('/', function(req, res){
-    console.log(req.body);
-})
+
+    const user = new User ({
+        username: req.body.username,
+        password: req.body.password,
+    })
+
+        req.login(user, function(err){
+        if(err){
+            console.log(err);
+        } else {
+            passport.authenticate('local')(req, res, function(){
+                res.redirect('/home');
+            });
+        };
+    });
+});
 
 module.exports = router;

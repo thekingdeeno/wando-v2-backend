@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -16,46 +17,43 @@ const { ObjectId } = require("mongodb");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
-// routing func setup
+
 const router = express.Router();
 
-const server = require('../app');
-
-
-router.get('/:searchParam', function(req, res){
-    if (req.isAuthenticated()) {
-            async function renderProfile(){
-        const viewerData = await User.findById((req.user).id);
-        const profileData = await User.findOne({username: req.params.searchParam});
-
-        try {
-            const userPosts = await Post.find({authorId: profileData._id});
-
-
-            res.render('profile',{
-                postArray: userPosts,
-                profileInfo: profileData,
-                viewerInfo: viewerData,
-            });
-
-        } catch (error) {
-
-            // res.redirect(`/profile/${viewerData.username}`);
-            res.redirect(`/home`);
-            
-        };
-
-    };
-
-    renderProfile();
-    } else {
-        res.redirect('/register')
-    }
-
-
+router.get('/', function(req, res){
+    res.render('signup',{
+      allUser: User.find(),
+    })
 });
 
+router.post('/', function(req, res){
 
+  User.register({email: req.body.email,}, req.body.password, function(err, user){
+    if (err) {
+      console.log(err);
+      res.redirect('/register');
+    } else {
+      passport.authenticate('local')(req, res, function(){
+        res.redirect('/home');
+
+        async function setUserData(){
+
+          // const username = (email.split("@"[0]))[0];
+
+          const foundUser = await User.findById(req.user.id);
+
+            foundUser.fullname = req.body.fullname;
+            foundUser.username = req.body.username;
+
+            foundUser.save();
+
+        };
+          setUserData()
+      });
+    };
+  });
+
+});
 
 
 module.exports = router;

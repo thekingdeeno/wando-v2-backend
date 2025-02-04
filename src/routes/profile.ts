@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -19,30 +20,43 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 // routing func setup
 const router = express.Router();
 
+const server = require('../app');
 
-router.get('/', function(req, res){
+
+router.get('/:searchParam', function(req, res){
     if (req.isAuthenticated()) {
+            async function renderProfile(){
+        const viewerData = await User.findById((req.user).id);
+        const profileData = await User.findOne({username: req.params.searchParam});
 
-      User.findById((req.user).id).then(foundUser=>{
+        try {
+            const userPosts = await Post.find({authorId: profileData._id});
 
-        Post.find().then(function(posts){
 
-          res.render('home', {
-            thisUser: foundUser,
-            postArray: posts.reverse(),
-          });
+            res.render('profile',{
+                postArray: userPosts,
+                profileInfo: profileData,
+                viewerInfo: viewerData,
+            });
 
-        }).catch(err=>{
-          console.log(err);
-        });
+        } catch (error) {
 
-      })
+            // res.redirect(`/profile/${viewerData.username}`);
+            res.redirect(`/home`);
+            
+        };
 
-      
-
-    } else {
-        res.redirect('register');
     };
+
+    renderProfile();
+    } else {
+        res.redirect('/register')
+    }
+
+
 });
+
+
+
 
 module.exports = router;

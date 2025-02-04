@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -10,7 +11,6 @@ const mongoose = require('mongoose');
 const mongodb = require('mongodb');
 const findOrCreate = require('mongoose-findorcreate');
 const session = require('express-session');
-// const session = require('cookie-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const { ObjectId } = require("mongodb");
@@ -69,7 +69,7 @@ useSocket()
 });
 
 
-passport.use(User.createStrategy());
+// passport.use(User.createStrategy());
 
 
 // SERIALIZE AND DESERIALIZE USER
@@ -300,14 +300,3 @@ app.use('/discover', discoverRoute);
 // -------------- Testing Area (begining) ------------------
 
 //--------------- Testing Area (ending) --------------------
-
-
-
-
-// Ngrok Server Setup (reminder: remove Ngrok before launching this website)
-async function startNgrok (){
-  const url = await ngrok.connect({ addr: 3000, authtoken_from_env: true });
-  console.log(`Ingress established at: ${url}`);
-};
-
-// startNgrok()

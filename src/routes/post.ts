@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -21,25 +22,47 @@ const router = express.Router();
 
 
 router.get('/', function(req, res){
-    res.render('login');
-});
 
+    if (req.isAuthenticated()) {
+      async function render(){
+
+      const thisUser = await User.findById((req.user).id)
+
+        res.render('upload',{
+          username: thisUser.username
+        })        
+      }
+      render();
+
+    } else {
+      res.redirect('register');
+    };
+  });
+  
 router.post('/', function(req, res){
-
-    const user = new User ({
-        username: req.body.username,
-        password: req.body.password,
-    })
-
-        req.login(user, function(err){
-        if(err){
-            console.log(err);
-        } else {
-            passport.authenticate('local')(req, res, function(){
-                res.redirect('/home');
-            });
-        };
+  
+  
+  
+    User.findById((req.user).id).then(function(foundUser){
+      const post = new Post({
+      title: req.body.title,
+      content: req.body.content,
+      authorId: (req.user).id,
+      authorUsername: foundUser.username,
     });
-});
+  
+      post.save().then(function(){
+        res.redirect('/home');
+      }).catch(err=>{
+        console.log(err);
+      })
+      foundUser.posts.push(post._id);
+      foundUser.save();
+  
+    });
+    
+    
+  
+  });
 
-module.exports = router;
+  module.exports = router;

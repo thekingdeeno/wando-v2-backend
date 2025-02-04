@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");

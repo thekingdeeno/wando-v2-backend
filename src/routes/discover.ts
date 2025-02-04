@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -19,38 +20,29 @@ const TwitterStrategy = require('passport-twitter').Strategy;
 // routing func setup
 const router = express.Router();
 
+// to access server for socket.io 
+const server = require('../app')
+
 
 router.get('/', function(req, res){
-    if (req.isAuthenticated()){
-      Chat.find({"users.userId": (req.user).id,"messages": {$exists: true,$not: {$size: 0}}}).then(function(foundChats){
-  
-      User.findById((req.user).id).then((found) =>{
-        res.render('messages', {
-          myObjId: found._id,
-          myId: (req.user).id,
-          myUsername: found.username,
-          chats: foundChats,
-        });            
-      });
-  
-  
-      }).catch(err=>{
-        console.log(err);
-      });
-  
-    }else{
-      res.redirect('/register')
-    };
-  });
-  
-  router.post('/', function(req, res){
-    User.find({username: req.body.search}).then(function(searchResult){
-  
-      res.render('chatsearchresult',{
-        foundUser : searchResult,
-      });
-    });
-  });
+    if (req.isAuthenticated()) {
+    async function discover(){
+        const thisUser = await User.findById((req.user).id)
+        res.render('discover',{
+            thisUser: thisUser.username
+        })        
+    }
 
+    discover()
 
-  module.exports = router;
+    } else {
+        res.redirect('register');
+    }
+
+})
+
+router.post('/', function(req, res){
+    console.log(req.body);
+})
+
+module.exports = router;

@@ -1,4 +1,5 @@
-require("dotenv").config();
+ // @ts-nocheck 
+import 'dotenv/config'
 const express = require('express');
 const socket = require('socket.io');
 const ngrok = require("@ngrok/ngrok");
@@ -16,43 +17,33 @@ const { ObjectId } = require("mongodb");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
-
+// routing func setup
 const router = express.Router();
 
+
 router.get('/', function(req, res){
-    res.render('signup',{
-      allUser: User.find(),
-    })
-});
+    if (req.isAuthenticated()) {
 
-router.post('/', function(req, res){
+      User.findById((req.user).id).then(foundUser=>{
 
-  User.register({email: req.body.email,}, req.body.password, function(err, user){
-    if (err) {
-      console.log(err);
-      res.redirect('/register');
+        Post.find().then(function(posts){
+
+          res.render('home', {
+            thisUser: foundUser,
+            postArray: posts.reverse(),
+          });
+
+        }).catch(err=>{
+          console.log(err);
+        });
+
+      })
+
+      
+
     } else {
-      passport.authenticate('local')(req, res, function(){
-        res.redirect('/home');
-
-        async function setUserData(){
-
-          // const username = (email.split("@"[0]))[0];
-
-          const foundUser = await User.findById(req.user.id);
-
-            foundUser.fullname = req.body.fullname;
-            foundUser.username = req.body.username;
-
-            foundUser.save();
-
-        };
-          setUserData()
-      });
+        res.redirect('register');
     };
-  });
-
 });
-
 
 module.exports = router;
