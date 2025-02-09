@@ -1,16 +1,21 @@
+import { injectable, container } from "tsyringe";
 import RegistrationService from "./registration.service";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { injectable } from "tsyringe";
+import httpStatus from 'http-status';
 
 @injectable()
 class RegistrationController {
     constructor(
-        // registrationService: RegistrationService
-    ){}
+        private readonly registrationService: RegistrationService,
+    ){};
 
     registerUser = async (req: FastifyRequest, res: FastifyReply) => {
-        console.log(req)
-    }
-}
+        const payload = req.body;
+        
+        const data = await this.registrationService.registerUser(payload);
+
+        return res.status(httpStatus.OK).send(data)
+    };
+};
 
 export default RegistrationController

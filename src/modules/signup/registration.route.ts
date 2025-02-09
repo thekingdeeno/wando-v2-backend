@@ -1,7 +1,7 @@
+import { container } from "tsyringe";
 import { FastifyPluginAsync } from "fastify";
 import { METHODS } from "../../shared/enums/route.merthod.enum";
 import RegistrationController from "./registration.controller";
-import { container } from "tsyringe";
 
 const registrationController = container.resolve(RegistrationController)
 

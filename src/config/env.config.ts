@@ -10,3 +10,18 @@ export const server = {
     address: process.env.SERVER_ADDRESS || '0.0.0.0',
     bodyParserSize: process.env.BODY_PARSER_SIZE,
 };
+
+export const database = {
+    connection: {
+      host: process.env.MONGODB_HOST,
+      database: process.env.MONGODB_DATABASE as string,
+      user: process.env.MONGODB_USERNAME as string,
+      password: process.env.MONGODB_PASSWORD as string,
+      port: process.env.MONGODB_PORT || undefined,
+      srv: process.env.MONGODB_SRV || false
+    },
+    pool: {
+      min: parseInt(process.env.DB_POOL_MIN as string) || 1,
+      max: parseInt(process.env.DB_POOL_MAX as string) || 25,
+    }
+  };

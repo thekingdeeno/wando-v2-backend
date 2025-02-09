@@ -1,11 +1,12 @@
 import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
+import { bycryptHashString } from '../shared/utils/hash.utils';
 
 export interface User {
     firstName: string,
     lastName: string,
     email: string,
     phoneNumber: string,
-    username: string,
+    userName: string,
     dateOfBirth: Date,
     password: string,
 
@@ -30,7 +31,7 @@ export interface User {
     updatedAt: Date,
 };
 
-interface UserI extends User, Document {}
+export interface UserI extends User, Document {}
 
 
 const UserSchema = new Schema ({
@@ -38,7 +39,7 @@ const UserSchema = new Schema ({
     lastName: {type: String},
     email: {type: String, required: true, unique: true},
     phoneNumber: {type: String, required: true, unique: true},
-    username: {type: String, required: true, unique: true},
+    userName: {type: String, required: true, unique: true},
     dateOfBirth: {
         type: Date,
         // default: ()=> Date.now(),
@@ -88,7 +89,10 @@ const UserSchema = new Schema ({
         default: ()=> Date.now(),
     },
 });
+UserSchema.pre('save', async function(){
+    this.password = await bycryptHashString(this.password)
+})
 
-const UserModel: Model<UserI> = model<UserI>("users", UserSchema)
+export const UserModel: Model<UserI> = model<UserI>("users", UserSchema)
 
-export default UserModel;
+export interface UserPartialType extends Partial<User> {}
