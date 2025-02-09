@@ -11,6 +11,11 @@ const registrationRoute: FastifyPluginAsync = async (fastify) => {
         url: '/signup',
         handler: registrationController.registerUser
     })
+    fastify.route({
+        method: METHODS.GET,
+        url: '/check-existing',
+        handler: registrationController.checkExisting
+    })
 }
 
-export { registrationRoute }
+export { registrationRoute };
