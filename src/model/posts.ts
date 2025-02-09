@@ -1,21 +1,29 @@
-import mongoose from 'mongoose';
-const { Schema, SchemaTypes, model } = mongoose;
+import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
+import { CommentType } from '../shared/types/post.comment.type';
 
-const postSchema = new Schema({
-    authorId: {
+export interface Post {
+    userId: string,
+    title: string,
+    text: string,
+    image: string,
+    tags: string,
+    likes: string[],
+    comments: CommentType[],
+    shares: number,
+    createdAt: Date,
+}
+
+interface PostI extends Post, Document {}
+
+const PostSchema = new Schema({
+    userId: {
         type: SchemaTypes.ObjectId,
         ref: 'User',
     },
-    authorUsername: String,
-    createdAt: {
-        type: Date,
-        default: ()=> Date.now(),
-        immutable: true,
-    },
-    title: String,
-    content: String,
-    image: String,
-    tags: [String],
+    title: {type: String},
+    text: {type: String},
+    image: {type: String},
+    tags: {type: [String]}, // or [String]
     likes: [{
             type: SchemaTypes.ObjectId,
             ref: 'User',            
@@ -28,9 +36,15 @@ const postSchema = new Schema({
         username: String,
         content: String,
         likes: Number,
-    }]
+    }],
+    createdAt: {
+        type: Date,
+        default: ()=> Date.now(),
+        immutable: true,
+    },
     
 });
 
-const Post = model('Post', postSchema);
-export default Post;
+const PostModel: Model<PostI> = model<PostI>('post', PostSchema);
+
+export default PostModel;
