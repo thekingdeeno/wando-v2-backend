@@ -1,17 +1,25 @@
-import mongoose from 'mongoose';
-const { Schema, SchemaTypes, model } = mongoose;
+import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
+import { ChatType } from '../shared/types/general.type';
+import { MessageType } from '../shared/types/message.type';
 
-const chatSchema = new Schema({
-    type: String,
-    users: [{
-        userName: String,
+export interface Chat {
+    type: ChatType;
+    members: string[];
+    messages: MessageType;
+    createdAt: Date
+}
+
+interface ChatI extends Chat, Document {}
+
+const ChatSchema = new Schema({
+    type: {type: String},
+    members: [{
         userId: {
             type: SchemaTypes.ObjectId,
             ref: 'User',
         },
     }],
     messages: [{
-        authorName: String,
         authorId: {
             type: SchemaTypes.ObjectId,
             ref: 'User'
@@ -27,9 +35,17 @@ const chatSchema = new Schema({
             default: false
         }
     }],
-    
-
+    createdAt: {
+        type: Date,
+        default: ()=> Date.now(),
+        immutable: true,
+    },    
+    updatedAt: {
+        type: Date,
+        default: ()=> Date.now(),
+    },
 });
 
-const Chat = model('Chat', chatSchema);
-export default Chat;
+const ChatModel: Model<ChatI> = model<ChatI>('Chat', ChatSchema);
+
+export default ChatModel;

@@ -1,30 +1,72 @@
-import mongoose from 'mongoose';
-// import findOrCreate from 'mongoose-findorcreate';
-const { Schema, SchemaTypes, model } = mongoose;
-const passportLocalMongoose = require('passport-local-mongoose');
+import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
 
+export interface User {
+    firstName: string,
+    lastName: string,
+    email: string,
+    phoneNumber: string,
+    username: string,
+    dateOfBirth: Date,
+    password: string,
 
-const userSchema = new Schema ({
-    email: String, // User login email (formerly "username")
-    username: String, // Username (formerly "username")
-    fullname: String,
-    password: String,
-    userImage: String,
-    contactEmail: String,
-    contactPhone: String,
+    avatar: string,
+    bio: string,
+    link: string,
 
-    googleId: String,
+    googleId: string,
     facebookId: String,
-    twitterId: String,
-    instagramId: String,
-    githubId: String,
+    twitterId: string,
+    instagramId: string,
+    githubId: string,
 
+
+    friends: string[],
+    following: string[],
+    followers: string[],
+    posts: string[],
+    chats: string[],
+
+    createdAt: Date
+    updatedAt: Date,
+};
+
+interface UserI extends User, Document {}
+
+
+const UserSchema = new Schema ({
+    firstName: {type: String},
+    lastName: {type: String},
+    email: {type: String, required: true, unique: true},
+    phoneNumber: {type: String, required: true, unique: true},
+    username: {type: String, required: true, unique: true},
+    dateOfBirth: {
+        type: Date,
+        // default: ()=> Date.now(),
+        // immutable: true,
+    },
+    password: String,
+
+    avatar: String,
     bio: String,
     link: String,
+
+    googleId: {type: String, unique: true},
+    facebookId: {type: String, unique: true},
+    twitterId: {type: String, unique: true},
+    instagramId: {type: String, unique: true},
+    githubId: {type: String, unique: true},
 
     friends: [{
         type: SchemaTypes.ObjectId,
         ref: 'User',
+    }],
+    following:[{
+        type: SchemaTypes.ObjectId,
+        ref: 'User'
+    }],
+    followers: [{
+        type: SchemaTypes.ObjectId,
+        ref: 'User'
     }],
 
     posts: [{
@@ -35,19 +77,18 @@ const userSchema = new Schema ({
         type: SchemaTypes.ObjectId,
         ref: 'Chat'
     }],
-    following:[{
-        type: SchemaTypes.ObjectId,
-        ref: 'User'
-    }],
-    followers: [{
-        type: SchemaTypes.ObjectId,
-        ref: 'User'
-    }],
+
+    createdAt: {
+        type: Date,
+        default: ()=> Date.now(),
+        immutable: true,
+    },
+    updatedAt: {
+        type: Date,
+        default: ()=> Date.now(),
+    },
 });
 
-userSchema.plugin(passportLocalMongoose, { usernameField : 'email' });
-// userSchema.plugin(findOrCreate);
-const User = model('User', userSchema);
+const UserModel: Model<UserI> = model<UserI>("users", UserSchema)
 
-
-export default User;
+export default UserModel;

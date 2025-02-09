@@ -74,26 +74,26 @@ export default App;
 
 
 
-// // MONGOOSE OPERATIONS 
+// MONGOOSE OPERATIONS 
 
-// mongoose.connect(`mongodb+srv://deeno:${process.env.MONGODB_PASSWORD}@cluster0.zg4yvyq.mongodb.net/Wando_communications?retryWrites=true&w=majority`).then(function(){
-//     console.log("Successfully connected to Wando database");
+mongoose.connect(`mongodb+srv://deeno:${process.env.MONGODB_PASSWORD}@cluster0.zg4yvyq.mongodb.net/Wando_communications?retryWrites=true&w=majority`).then(function(){
+    console.log("Successfully connected to Wando database");
 
-//   // Local Server Setup
-//   const server = app.listen(process.env.PORT, function(){
-//     console.log(`Wando app server running on ${process.env.PORT}`)
-//   });
+  // Local Server Setup
+  const server = app.listen(process.env.PORT, function(){
+    console.log(`Wando app server running on ${process.env.PORT}`)
+  });
 
-//   // I'm exporting the "server" variable to use in websocket functions within routes
-//   module.exports = server;
+  // I'm exporting the "server" variable to use in websocket functions within routes
+  module.exports = server;
 
-//   // Socket.io Functions Route
-// const useSocket = require("./socket");
-// useSocket()
+  // Socket.io Functions Route
+const useSocket = require("./socket");
+useSocket()
 
-// }).catch((err: any)=>{
-//     console.log(err);
-// });
+}).catch((err: any)=>{
+    console.log(err);
+});
 
 
 // // passport.use(User.createStrategy());
