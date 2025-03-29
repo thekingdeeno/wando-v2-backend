@@ -1,7 +1,7 @@
 import dbClient from "./database";
 
 function bootstrapApp() {
-    dbClient()
+    dbClient();
 }
 
 export default bootstrapApp;

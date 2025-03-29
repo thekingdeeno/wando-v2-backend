@@ -22,6 +22,15 @@ class RegistrationService {
         }
     };
 
+    async sendEmailVerifOtp(email: string, otp: number){
+        try {
+            
+        } catch (error) {
+            throw {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message}
+        }
+
+    }
+
     async checkExisting(fieldName: string, value: string){
         switch (fieldName) {
             case 'email':

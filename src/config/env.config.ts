@@ -1,3 +1,5 @@
+import { convertStringToBoolean } from "../shared/utils/boolean.utils";
+
 export const app = {
     name: process.env.APP_NAME,
     brand: process.env.BRAND_NAME,
@@ -24,4 +26,23 @@ export const database = {
       min: parseInt(process.env.DB_POOL_MIN as string) || 1,
       max: parseInt(process.env.DB_POOL_MAX as string) || 25,
     }
+  };
+
+  export const redis = {
+    user: process.env.REDIS_USER,
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASSWORD,
+  };
+
+  export const mailer = {
+    from: process.env.SMTP_FROM as string,
+    service: process.env.SMTP_SERVICE as string,
+    host: process.env.SMTP_HOST as string,
+    port: Number(process.env.SMTP_PORT),
+    secure: convertStringToBoolean(process.env.SMTP_SECURE as string),
+    auth: {
+      user: process.env.SMTP_USER as string,
+      pass: process.env.SMTP_PASSWORD as string,
+    },
   };
