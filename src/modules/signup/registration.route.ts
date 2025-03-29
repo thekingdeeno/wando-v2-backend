@@ -18,4 +18,4 @@ const registrationRoute: FastifyPluginAsync = async (fastify) => {
     })
 }
 
-export { registrationRoute };
+export default registrationRoute;

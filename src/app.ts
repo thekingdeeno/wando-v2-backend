@@ -1,10 +1,12 @@
 import "reflect-metadata"
 import 'dotenv/config'
 import fastify, {FastifyInstance} from 'fastify';
-import { container } from 'tsyringe';
-import { registrationRoute } from './modules/signup/registration.route';
+import registrationRoute  from './modules/signup/registration.route';
+import testRoute from "./modules/test/test.route";
 import RouteVersion from './shared/enums/route.config.enum';
 import bootstrapApp from "./bootstrap";
+import RedisClient from "./shared/implementations/cache/redis/redis.client";
+import { container } from "tsyringe";
 const express = require('express');
 const User = require('./model/users');
 const bodyParser = require('body-parser');
@@ -29,7 +31,8 @@ class App {
   };
 
   private registerModules(){
-    this.fastify.register(registrationRoute,  { prefix: RouteVersion['v1.register'] })
+    this.fastify.register(registrationRoute,  { prefix: RouteVersion['v1.register'] });
+    this.fastify.register(testRoute, {prefix: RouteVersion['v1.test']})
   }
 
   public getInstance(){
@@ -38,11 +41,12 @@ class App {
 
   public async close() {
     await this.fastify.close();
+    container.resolve(RedisClient).disconnect();
   };
 
 
-  public listen(port: number, address = '0.0.0.0') {
-    return this.fastify.listen({ port }, (err, address) => {
+  public listen(port: number,) {
+    return this.fastify.listen({ port }, (err,  address = '0.0.0.0') => {
       if (err) {
         console.error(err)
         process.exit(0)
