@@ -14,7 +14,7 @@ class RegistrationController {
         
         const data = await this.registrationService.registerUser(payload);
 
-        return res.status(httpStatus.OK).send(data)
+        return res.status(httpStatus.OK).send(data);
     };
 
     checkExisting = async (req: FastifyRequest, res: FastifyReply) => {
@@ -22,6 +22,20 @@ class RegistrationController {
         const data = await this.registrationService.checkExisting(fieldName, value);
         return res.status(httpStatus.OK).send(data);
     };
+
+    sendEmailVerifOtp = async(req: FastifyRequest, res: FastifyReply) => {
+        const {email} = req.params as any;
+        const data =  await this.registrationService.sendEmailVerifOtp(email);
+
+        return res.status(httpStatus.OK).send(data);
+    }
+
+    verifyEmailVerifOtp = async(req: FastifyRequest, res: FastifyReply) => {
+        const {email, otp} = req.params as any;
+        const data = await this.registrationService.verifyEmailVerifOtp(email, otp);
+
+        return res.status(httpStatus.OK).send(data);
+''    };
 };
 
 export default RegistrationController

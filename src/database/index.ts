@@ -8,7 +8,7 @@ const dbClient = async ()=>{
     let useSrv: boolean;
     (typeof srv === 'boolean') ? useSrv = srv : useSrv = convertStringToBoolean(srv);
 
-    const url = `mongodb${useSrv&&'+srv'}://${user}:${password}@${host}${port?`:${port}`:''}/${dbName}?retryWrites=true&w=majority`
+    const url = `mongodb${useSrv?'+srv':''}://${user}:${password}@${host}${port?`:${port}`:''}/${dbName}?retryWrites=true&w=majority`
 
     return await mongoose.connect(url).then(()=>{
         console.log("MongoDB Database Connected Succeffuly");
