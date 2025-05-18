@@ -5,6 +5,7 @@ import { UserRepository } from '../repositories/user.repository';
 
 export interface User {
     userId: string,
+    reference: string,
     firstName: string,
     lastName: string,
     email: string,

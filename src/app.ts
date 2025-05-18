@@ -1,13 +1,16 @@
 import "reflect-metadata"
 import 'dotenv/config'
 import fastify, {FastifyInstance} from 'fastify';
-import registrationRoute  from './modules/signup/registration.route';
-import authenticationRoute from "./modules/auth/authentication.route";
-import testRoute from "./modules/test/test.route";
 import RouteVersion from './shared/enums/route.config.enum';
 import bootstrapApp from "./bootstrap";
 import RedisClient from "./shared/implementations/cache/redis/redis.client";
 import { container } from "tsyringe";
+import testRoute from "./modules/test/test.route";
+import registrationRoute  from './modules/signup/registration.route';
+import authenticationRoute from "./modules/auth/authentication.route";
+import userRoute from "./modules/user/user.route";
+
+
 const express = require('express');
 const User = require('./model/users');
 const bodyParser = require('body-parser');
@@ -19,7 +22,6 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const TiktokStrategy = require('passport-tiktok-auth').Strategy;
 // routing func setup
-const router = express.Router();
 
 class App {
   private fastify: FastifyInstance;
@@ -35,6 +37,7 @@ class App {
     this.fastify.register(registrationRoute,  { prefix: RouteVersion['v1.register'] });
     this.fastify.register(authenticationRoute, {prefix: RouteVersion['v1.authentication']})
     this.fastify.register(testRoute, {prefix: RouteVersion['v1.test']})
+    this.fastify.register(userRoute, {prefix: RouteVersion['v1.user']})
   }
 
   public getInstance(){
