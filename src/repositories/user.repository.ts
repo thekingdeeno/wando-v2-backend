@@ -2,7 +2,8 @@ import { User, UserModel, UserPartialType, UserI } from "../model/users";
 import { BaseRepository } from "./base.repository";
 
 export class UserRepository extends BaseRepository<User, UserI> {
-    constructor(){
+    constructor(
+    ){
         super(UserModel);
     };
 
@@ -26,11 +27,20 @@ export class UserRepository extends BaseRepository<User, UserI> {
         return await UserModel.findOne({username}).exec();
     };
 
-    async updateUser(userId: string, payload: any){
-        return await UserModel.findByIdAndUpdate(userId, payload).exec();
+    async updateByObjectId(objId: string, payload: any){
+        return await UserModel.findByIdAndUpdate(objId, payload).exec();
     };
 
-    async deleteUser(userId: string){
-        return await UserModel.deleteOne({_id: userId}).exec();
+    async updateByUserId(userId: string, payload: any){
+        return await UserModel.updateOne({userId}, {$set: payload})
+    };
+
+    async updateByUserReference(userRef: string, payload: any){
+        return await UserModel.findOneAndUpdate({userRef}, {$set: payload});
+
+    };
+
+    async deleteUser(userReference: string){
+        return await UserModel.deleteOne({userReference}).exec();
     };
 };

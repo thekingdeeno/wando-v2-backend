@@ -16,15 +16,23 @@ class RegistrationService {
 
     async registerUser(payload: ObjectLiteral){
         try {
+            const {status, message} = await this.checkEmailAvailability(payload.email);
+            if (!status) {
+                throw new Error(message);
+            }
             const newUser = await this.userRepo.createUser(payload);
+            const {firstName, lastName, email} = newUser;
+            if (newUser) {
+                this.sendEmailVerifOtp(email)
+            }
             return{
                 status: true,
                 message: 'User created successfuly',
-                data: newUser,
+                data: {firstName, lastName, email},
             };
         } catch (err: any) {
             console.log(err.message)
-            throw {status: false, statusCode: httpStatus.BAD_REQUEST, message: err.message};
+            return {status: false, statusCode: httpStatus.BAD_REQUEST, message: err.message};
         }
     };
 
@@ -34,15 +42,13 @@ class RegistrationService {
             const data = await this.userChache.setEmailOTP(email, otp);
             const mail = await this.messagingService.sendAccountVerificationWithOtpEmail(email, otp);
 
-            console.log(data, mail);
-
             return{
                 status: true,
                 message: "Email Verif OTP sent successfuly"
             }
         } catch (error) {
             console.log(error.message)
-            throw {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message}
+            return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message}
         };
     };
 
@@ -50,6 +56,11 @@ class RegistrationService {
         try {
             const data = await this.userChache.getEmailOTP(email);
             if (otp === data) {
+                const user = await this.userRepo.findUserByEmail(email)
+                if (user.isVerified === false) {
+                    const {acknowledged} = await this.userRepo.updateByUserId(user.userId, {isVerified: true});
+                    if (acknowledged === false) return {status: false, message: 'OTP valid but failed to update account'}
+                }
                 return{
                     status: true,
                     message: "OTP is correct"
@@ -60,10 +71,9 @@ class RegistrationService {
                     message: "Invalid or Expired OTP"
                 }
             }
-            
         } catch (error: any) {
             console.log(error.message)
-            throw {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message}
+            return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message}
         };
     };
 
@@ -89,9 +99,9 @@ class RegistrationService {
             if (existing) {
                 throw new Error('A user with this email already exists');
             };
+            return {status: true}
         } catch (error) {
-            console.log(error.message);
-            throw {status: false, statusCode: httpStatus.CONFLICT, message: error.message};
+            return {status: false, statusCode: httpStatus.CONFLICT, message: error.message};
         };
     };
     
@@ -101,9 +111,9 @@ class RegistrationService {
             if (existing) {
                 throw new Error('A user with this phone number already exists');
             };
+            return {status: true}
         } catch (error) {
-            console.log(error.message);
-            throw {status: false, statusCode: httpStatus.CONFLICT, message: error.message};
+            return {status: false, statusCode: httpStatus.CONFLICT, message: error.message};
         };
     };
 

@@ -1,7 +1,10 @@
 import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
 import { bycryptHashString } from '../shared/utils/hash.utils';
+import { genUUID } from '../shared/utils/generate.utils';
+import { UserRepository } from '../repositories/user.repository';
 
 export interface User {
+    userId: string,
     firstName: string,
     lastName: string,
     email: string,
@@ -31,21 +34,23 @@ export interface User {
 export interface UserI extends User, Document {}
 
 const UserSchema = new Schema ({
+    userId: {type: String},
+    userReference: {type: String},
     firstName: {type: String},
     lastName: {type: String},
     email: {type: String, required: true, unique: true},
     phoneNumber: {type: String, required: true, unique: true},
-    username: {type: String, required: true, unique: true},
+    username: {type: String, required: false, unique: true},
     dateOfBirth: {type: Date, immutable: true},
     password: String,
     avatar: String,
     bio: String,
     link: String,
-    googleId: {type: String, unique: true},
-    facebookId: {type: String, unique: true},
-    twitterId: {type: String, unique: true},
-    instagramId: {type: String, unique: true},
-    githubId: {type: String, unique: true},
+    googleId: {type: String},
+    facebookId: {type: String},
+    twitterId: {type: String},
+    instagramId: {type: String},
+    githubId: {type: String},
     friends: [{type: SchemaTypes.ObjectId, ref: 'User'}],
     following:[{type: SchemaTypes.ObjectId, ref: 'User'}],
     followers: [{type: SchemaTypes.ObjectId, ref: 'User'}],
@@ -58,9 +63,15 @@ const UserSchema = new Schema ({
 });
 
 UserSchema.pre('save', async function(){
-    this.password = await bycryptHashString(this.password)
+    this.password = await bycryptHashString(this.password);
+    this.userReference = genUUID();
+    this.firstName = this.firstName.toLowerCase();
+    this.lastName = this.lastName.toLowerCase();
+    this.email = this.email.toLowerCase();
+    this.userId = this._id.toString()
 });
 
 export const UserModel: Model<UserI> = model<UserI>("users", UserSchema);
+
 
 export interface UserPartialType extends Partial<User> {};

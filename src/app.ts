@@ -2,6 +2,7 @@ import "reflect-metadata"
 import 'dotenv/config'
 import fastify, {FastifyInstance} from 'fastify';
 import registrationRoute  from './modules/signup/registration.route';
+import authenticationRoute from "./modules/auth/authentication.route";
 import testRoute from "./modules/test/test.route";
 import RouteVersion from './shared/enums/route.config.enum';
 import bootstrapApp from "./bootstrap";
@@ -32,6 +33,7 @@ class App {
 
   private registerModules(){
     this.fastify.register(registrationRoute,  { prefix: RouteVersion['v1.register'] });
+    this.fastify.register(authenticationRoute, {prefix: RouteVersion['v1.authentication']})
     this.fastify.register(testRoute, {prefix: RouteVersion['v1.test']})
   }
 
