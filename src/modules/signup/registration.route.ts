@@ -15,6 +15,16 @@ const registrationRoute: FastifyPluginAsync = async (fastify) => {
         method: METHODS.GET,
         url: '/check-existing',
         handler: registrationController.checkExisting
+    });
+    fastify.route({
+        method: METHODS.GET,
+        url: '/email-verif-otp/:email',
+        handler: registrationController.sendEmailVerifOtp
+    });
+    fastify.route({
+        method: METHODS.GET,
+        url: "/verify-email-otp/:email/:otp",
+        handler: registrationController.verifyEmailVerifOtp
     })
 }
 

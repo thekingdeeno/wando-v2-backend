@@ -8,7 +8,7 @@ class RedisService {
     constructor(
     ){}
 
-    public async setData(key: string, value: string){
+    public async setData(key: string, value: string, lock?: boolean){
         try {
             return (await redis).set(key, value);
         } catch (error: any) {
@@ -16,6 +16,15 @@ class RedisService {
             return false
         }
     }
+
+    public async setDataWithExpiry(key: string, value: string, seconds: number, lock?: boolean){
+        try {
+            // let E
+            return (await redis).set(key, value, {EX: seconds} )
+        } catch (error: any) {
+            console.log(`Error::RedissetDataWithExpiry ===> ${error.message} || could not set with expiry`);
+        };
+    };
 
     public async getData(key: string){
         try {
@@ -35,6 +44,5 @@ class RedisService {
         }
     }
 }
-
 
 export default RedisService
