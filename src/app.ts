@@ -9,7 +9,7 @@ import testRoute from "./modules/test/test.route";
 import registrationRoute  from './modules/signup/registration.route';
 import authenticationRoute from "./modules/auth/authentication.route";
 import userRoute from "./modules/user/user.route";
-
+import multipart from "@fastify/multipart";
 
 const express = require('express');
 const User = require('./model/users');
@@ -34,7 +34,8 @@ class App {
   };
 
   private registerModules(){
-    this.fastify.register(registrationRoute,  { prefix: RouteVersion['v1.register'] });
+    this.fastify.register(multipart);
+    this.fastify.register(registrationRoute, { prefix: RouteVersion['v1.register'] });
     this.fastify.register(authenticationRoute, {prefix: RouteVersion['v1.authentication']})
     this.fastify.register(testRoute, {prefix: RouteVersion['v1.test']})
     this.fastify.register(userRoute, {prefix: RouteVersion['v1.user']})

@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
+import { setReq } from "../utils/request.utils";
 
 const authMiddleware = async (req:FastifyRequest, res: FastifyReply) => {
     try {
@@ -19,17 +20,9 @@ const authMiddleware = async (req:FastifyRequest, res: FastifyReply) => {
         setReq(req, 'userId', payload.id)
         
     } catch (error) {
-        console.log(error.message)
+        console.log(`authMiddleware====> ${error.message}`);
         res.status(httpStatus.UNAUTHORIZED).send({status: false, statusCode: httpStatus.UNAUTHORIZED, message: error.message})
     }
-}
-
-function setReq(req: any, field: string, value: any) {
-    return req[`${field}`] = value;
-}
-
-export function getReq(req: any, field: string){
-    return req[`${field}`]
 }
 
 export default authMiddleware
