@@ -3,6 +3,8 @@ import UserController from "./user.controller";
 import { FastifyPluginAsync } from "fastify";
 import { METHODS } from "../../shared/enums/route.merthod.enum";
 import authMiddleware from "../../shared/middlewares/auth.middleware";
+import multipathMiddleware from "../../shared/middlewares/multipath.middleware";
+
 
 const userController = container.resolve(UserController);
 
@@ -18,6 +20,12 @@ const userRoute: FastifyPluginAsync = async (fastify) => {
         url: '/update/:userId',
         preHandler: [authMiddleware],
         handler: userController.updateUser
+    });
+        fastify.route({
+        method: METHODS.POST,
+        url: '/update-pfp/:userId',
+        preHandler: [authMiddleware, multipathMiddleware],
+        handler: userController.uploadPfp
     })
     fastify.route({
         method: METHODS.GET,

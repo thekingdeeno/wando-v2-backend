@@ -46,3 +46,16 @@ export const database = {
       pass: process.env.SMTP_PASSWORD as string,
     },
   };
+
+  export const gcp = {
+    project_id: process.env.GCP_PROJECT_ID,
+    stagingkeyFilenamePath: String(process.env.STAGING_KEYFILENAME_PATH),
+    serviceAccount: process.env.GCP_SERVICE_ACCOUNT,
+    bucketName: process.env.GCP_BUCKET_NAME,
+  };
+
+  export const cloudinaryConfig = {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  }

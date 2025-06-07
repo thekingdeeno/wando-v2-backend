@@ -2,11 +2,13 @@ import { injectable } from "tsyringe";
 import { UserRepository } from "../../repositories/user.repository";
 import httpStatus from "http-status";
 import { User, UserPartialType } from "../../model/users";
+import UploadService from "../../shared/services/cloud-storage.service";
 
 @injectable()
 class UserService {
     constructor(
-        private readonly userRepo: UserRepository
+        private readonly userRepo: UserRepository,
+        private readonly uploadService: UploadService
     ){};
 
     async fetchUserById (userId: string){
@@ -36,6 +38,26 @@ class UserService {
                 status: true,
                 message: 'User Updated Successfully'
             };
+        } catch (error) {
+            console.log(error.message)
+            return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message};
+        }
+    }
+
+    async updatePfp (userId: string, img: any){
+        try {
+            const data: any = await this.uploadService.uploadMedia('cloudinary', {
+                file: img.buffer,
+                fileName: userId,
+                filePath: 'pfp'
+            });
+
+            await this.userRepo.updateByUserId(userId, {avatar: data.record.url})
+            
+            return{
+                status: true,
+                message: 'User PFP updated succeffully'
+            }
         } catch (error) {
             console.log(error.message)
             return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message};
