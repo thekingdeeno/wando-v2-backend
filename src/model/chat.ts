@@ -1,6 +1,6 @@
 import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
 import { ChatType } from '../shared/types/general.type';
-import { MessageType } from '../shared/types/message.type';
+import { MessageType } from '../shared/types/general.type';
 
 export interface Chat {
     type: ChatType;

@@ -1,6 +1,6 @@
 import { injectable } from 'tsyringe';
 import { v2 as cloudinary } from 'cloudinary';
-import { cloudinaryConfig } from '../../../../config/env.config';
+import { cloudinaryConfig } from '../../config/env.config';
 
 cloudinary.config(cloudinaryConfig)
 
@@ -10,9 +10,7 @@ class CloudinaryService {
     constructor(){}
     
     public async upload(file: any, destinationFileName: string, destinationFilePath: string){
-        try {
-
-            
+        try {    
         // Buffer stream upload
         const data: any = await new Promise((resolve) => {
             cloudinary.uploader.upload_stream(
@@ -49,8 +47,18 @@ class CloudinaryService {
         }
     };
 
-    public async delete(){
-
+    public async delete(path: string, resource_type: string){
+        try {
+           const response = await cloudinary.uploader.destroy(path, {resource_type})
+           console.log(response);
+           
+        } catch (error) {
+            console.log(`Cloudinary Delete Error::${error.message}`);
+            return{
+                status: false,
+                message: error.message
+            }
+        }
     }
 }
 

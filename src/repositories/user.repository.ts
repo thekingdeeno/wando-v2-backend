@@ -12,9 +12,29 @@ export class UserRepository extends BaseRepository<User, UserI> {
     };
 
     async findUserById(userId: string, nonSensitive?:boolean):Promise<any>{
+
         if (nonSensitive) {
-            const user =  await UserModel.findById(userId, {_id: 0, password: 0, googleId: 0, facebookId: 0, twitterId: 0, instagramId: 0, githubId: 0, friends: 0, followers: 0, following: 0, chats: 0, posts: 0, updatedAt: 0, __v: 0, });
-            return user;
+        const user = await UserModel.aggregate([
+            {
+                $match: {userId}
+            },
+            {
+                $project:{
+                    _id: 0,
+                    userId: 1,
+                    firstName: 1,
+                    lastName: 1,
+                    username: 1,
+                    email: 1,
+                    bio: 1,
+                    link: 1,
+                    posts: {$size: "$posts"},
+                    following: {$size: "$following"},
+                    followers: {$size: "$followers"},
+                },
+            },
+        ])
+            return user[0];
         };
         return await UserModel.findById(userId);
     };
@@ -43,26 +63,16 @@ export class UserRepository extends BaseRepository<User, UserI> {
         return await UserModel.findOneAndUpdate({userRef}, {$set: payload});
     };
 
-    async fetchFollowers(userId: string, limit = 50, page = 1, nextpage = page+1, ){
-        return await UserModel.find({userId},{followers: 1, _id: 0});
+    async fetchFollowers(userId: string, page = 1, limit = 30, ){
+        const skipValue = (limit * page) - limit
+        const followers = (await UserModel.findOne({userId}, {followers: {$slice: [skipValue*1, limit*1]}})).followers
+        return followers
     };
 
-    async fetchFollowing(userId: string, limit = 50, page = 1, nextpage = page+1, ){
-        return await UserModel.find({userId},{following: 1, _id: 0});
-    };
-
-    async fetchFollowersCount(userId: string){
-        return await UserModel.aggregate([
-            {$match:{userId: userId,}},
-            {$project: {_id: 0, count: {$size: "$followers"}}}
-        ]);
-    };
-
-    async fetchFollowingCount(userId: string){
-        return await UserModel.aggregate([
-            {$match:{userId: userId,}},
-            {$project: {_id: 0, count: {$size: "$following"}}}
-        ]);
+    async fetchFollowing(userId: string, page = 1, limit = 30,){
+        const skipValue = (limit * page) - limit
+        const following = (await UserModel.findOne({userId}, {following: {$slice: [skipValue*1, limit*1]}})).following
+        return following
     };
 
     async followUser(userId: string, followedId: string){
@@ -84,12 +94,34 @@ export class UserRepository extends BaseRepository<User, UserI> {
         }).count();
     };
 
-    async fetchFriends(userId: string, limit = 50, page = 1, nextpage = page+1, ){
-        return await UserModel.find({userId},{following: 1, _id: 0});
+    async addToPosts(userId: string, postId: string){
+        return await UserModel.updateOne({userId}, {$push:{
+            posts: postId,
+        }})
+    };
+
+    async addToLikes(userId: string, postId: string){
+        return await UserModel.updateOne({userId}, {$push:{
+            likes: postId
+        }})
+    };
+
+    async addToSaves(userId: string, postId: string){
+        return await UserModel.updateOne({userId}, {$push:{
+            saves: postId
+        }})
+    };
+
+    async fetchFriends(userId: string, limit = 50, page = 1 ){
+        const skipValue = (limit * page) - limit
+        const friends = (await UserModel.findOne({userId}, {friends: {$slice: [skipValue*1, limit*1]}})).friends
+        return friends
     };
 
     async fetchChats(userId: string, limit = 50, page = 1, nextpage = page+1, ){
-        return await UserModel.find({userId},{chats: 1, _id: 0});
+        const skipValue = (limit * page) - limit
+        const chats = (await UserModel.findOne({userId}, {chats: {$slice: [skipValue*1, limit*1]}})).chats;
+        return chats
     };
 
     async deleteUser(userReference: string){

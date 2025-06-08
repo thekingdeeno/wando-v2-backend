@@ -3,6 +3,7 @@ import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
 
 export interface Upload {
     uploadId: string,
+    uploader: string,
     category: string,
     fileType: string,
     fileFormat: string,
@@ -18,12 +19,17 @@ export interface UploadI extends Upload, Document {}
 
 const UploadSchema = new Schema({
     uploadId: {type: String},
-    category: {type: String},
+    uploader: {
+        type: SchemaTypes.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    category: {type: String, required: true},
     fileType: {type: String},
     fileFormat: {type: String},
-    host: {type: String},
-    path: {type: String},
-    url: {type: String},
+    host: {type: String, required: true,},
+    path: {type: String, required: true,},
+    url: {type: String, required: true,},
     fileName: {type: String},
     createdAt: {type: Date, default: ()=> Date.now(), immutable: true},
     updatedAt: {type: Date, default: ()=> Date.now()},
