@@ -9,4 +9,12 @@ export class UploadRepository extends BaseRepository<Upload, UploadI> {
     async recordUpload(payload: UploadPartialType){
         return await new UploadModel(payload).save();
     };
+
+    async deleteUploadByPath(userId: string ,path: string){
+        return await UploadModel.deleteOne({uploader: userId, path}).exec();
+    }
+
+    async deleteOldPfp(userId: string ,newUpload: string){
+        return await UploadModel.deleteMany({'uploader': userId, category: 'pfp', 'uploadId': {$ne: newUpload}}).exec();
+    }
 }

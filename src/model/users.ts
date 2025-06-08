@@ -1,7 +1,6 @@
 import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
 import { bycryptHashString } from '../shared/utils/hash.utils';
 import { genUUID } from '../shared/utils/generate.utils';
-import { UserRepository } from '../repositories/user.repository';
 
 export interface User {
     userId: string,
@@ -26,6 +25,8 @@ export interface User {
     followers: string[],
     posts: string[],
     chats: string[],
+    likes: string[],
+    saves: string[],
     isVerified: boolean,
     isOperational: boolean,
     createdAt: Date,
@@ -52,11 +53,13 @@ const UserSchema = new Schema ({
     twitterId: {type: String},
     instagramId: {type: String},
     githubId: {type: String},
-    friends: [{type: SchemaTypes.ObjectId, ref: 'User'}],
-    following:[{type: SchemaTypes.ObjectId, ref: 'User'}],
-    followers: [{type: SchemaTypes.ObjectId, ref: 'User'}],
-    posts: [{type: SchemaTypes.ObjectId, ref: 'Posts'}],
-    chats: [{type: SchemaTypes.ObjectId, ref: 'Chat'}],
+    friends: [{type: SchemaTypes.ObjectId, ref: 'user'}],
+    following:[{type: SchemaTypes.ObjectId, ref: 'user'}],
+    followers: [{type: SchemaTypes.ObjectId, ref: 'user'}],
+    posts: [{type: SchemaTypes.ObjectId, ref: 'posts'}],
+    chats: [{type: SchemaTypes.ObjectId, ref: 'chat'}],
+    likes: [{type: SchemaTypes.ObjectId, ref: 'post'}],
+    saves: [{type: SchemaTypes.ObjectId, ref: 'post'}],
     isVerified: {type: Boolean, default: false},
     isOperational: {type: Boolean, default: false},
     createdAt: {type: Date, default: ()=> Date.now(), immutable: true},
@@ -68,8 +71,9 @@ UserSchema.pre('save', async function(){
     this.userReference = genUUID();
     this.firstName = this.firstName.toLowerCase();
     this.lastName = this.lastName.toLowerCase();
+    this.username = this.username.toLowerCase();
     this.email = this.email.toLowerCase();
-    this.userId = this._id.toString()
+    this.userId = this._id.toString();
 });
 
 export const UserModel: Model<UserI> = model<UserI>("users", UserSchema);

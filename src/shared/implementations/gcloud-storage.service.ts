@@ -1,6 +1,6 @@
 import { Storage } from "@google-cloud/storage";
-import { gcp } from "../../../../config/env.config";
-import { convertBufferToReadableStream } from "../../../utils/media.util";
+import { gcp } from "../../config/env.config";
+import { convertBufferToReadableStream } from "../utils/media.util";
 import { injectable } from 'tsyringe';
 
 

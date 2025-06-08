@@ -34,6 +34,12 @@ const userRoute: FastifyPluginAsync = async (fastify) => {
         handler: userController.fetchFollowers
     })
     fastify.route({
+        method: METHODS.GET,
+        url: '/following/:userId',
+        preHandler: [authMiddleware],
+        handler: userController.fetchFollowing
+    })
+    fastify.route({
         method: METHODS.PUT,
         url: '/follow-user/:userId',
         preHandler: [authMiddleware],

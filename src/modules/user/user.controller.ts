@@ -32,8 +32,14 @@ class UserController {
     }
 
     fetchFollowers = async (req: FastifyRequest, res: FastifyReply) => {
-        const {userId} = req.params as any;
-        const data = await this.userService.fetchFollowers(userId);
+        const {userId, page, limit} = req.params as any;
+        const data = await this.userService.fetchFollowers(userId, page, limit);
+        return res.status(httpStatus.OK).send(data);
+    }
+
+    fetchFollowing = async (req: FastifyRequest, res: FastifyReply) => {
+        const {userId, page, limit} = req.params as any;
+        const data = await this.userService.fetchFollowing(userId, page, limit);
         return res.status(httpStatus.OK).send(data);
     }
 

@@ -59,3 +59,5 @@ export const database = {
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
   }
+
+  export const cloudStorageHandler = process.env.CLOUD_STORAGE_HANDLER
