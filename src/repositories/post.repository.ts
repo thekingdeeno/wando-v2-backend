@@ -24,7 +24,7 @@ class PostRepository extends BaseRepository<Post, PostI> {
                     mediaUrls: 1,
                     likes: {$cond:{ if:{$isArray: "$likes"}, then: {$size: "$likes"}, else: "NA"}},comments: {$size: "$comments"},reposts: {$size: "$reposts"},shares: {$size: "$shares"},saves: {$size: "$saves"}
                 }
-            }
+            },
         ]);
         return post
     };
@@ -60,7 +60,7 @@ class PostRepository extends BaseRepository<Post, PostI> {
         return await PostModel.updateOne({postId},{$push: {
             comments: {
                 userId: userId,
-                username: userName,
+                username: userName, // remove this field
                 text: comment
             }
         }});

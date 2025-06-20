@@ -10,6 +10,8 @@ export type LoginForm = {
 }
 
 export type MessageType = {
+    messageId: string,
+    replyId: string,
     userId: string,
     text: string,
     sentAt: Date,
@@ -31,4 +33,11 @@ export type UploadPostDTO = {
     uploads?: any,
     hashtags?: string[],
     tags?: string[],
+}
+
+export type chatSettings = {
+  name?: string,
+  description?: string,
+  background?: {type: 'color'|'picture', data: string},
+  chatSound?: string,
 }

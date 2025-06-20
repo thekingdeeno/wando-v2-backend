@@ -3,24 +3,41 @@ import { ChatType } from '../shared/types/general.type';
 import { MessageType } from '../shared/types/general.type';
 
 export interface Chat {
+    chatId: string
     type: ChatType;
+    creator: string[];
     members: string[];
-    messages: MessageType;
-    createdAt: Date
+    admin: string[];
+    messages: MessageType[];
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-interface ChatI extends Chat, Document {}
+export interface ChatI extends Chat, Document {}
 
 const ChatSchema = new Schema({
+    chatId: {type: String},
     type: {type: String},
+    creator: {
+        userId: {
+            type: SchemaTypes.ObjectId,
+            ref: 'User',
+        },
+    },
     members: [{
         userId: {
             type: SchemaTypes.ObjectId,
             ref: 'User',
         },
     }],
+    admin: [{
+        userId: {
+            type: SchemaTypes.ObjectId,
+            ref: 'User',
+        },
+    }],
     messages: [{
-        authorId: {
+        userId: {
             type: SchemaTypes.ObjectId,
             ref: 'User'
         },
@@ -35,6 +52,7 @@ const ChatSchema = new Schema({
             default: false
         }
     }],
+    read: {type: Boolean},
     createdAt: {
         type: Date,
         default: ()=> Date.now(),
@@ -46,6 +64,10 @@ const ChatSchema = new Schema({
     },
 });
 
-const ChatModel: Model<ChatI> = model<ChatI>('Chat', ChatSchema);
+ChatSchema.pre('save', async function(){
+    this.chatId = this._id.toString();
+});
 
-export default ChatModel;
+export const ChatModel: Model<ChatI> = model<ChatI>('Chat', ChatSchema);
+
+export interface ChatPartialType extends Partial<Chat> {};
