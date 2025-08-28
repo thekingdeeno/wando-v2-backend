@@ -29,6 +29,8 @@ export class UserRepository extends BaseRepository<User, UserI> {
                     bio: 1,
                     link: 1,
                     posts: {$size: "$posts"},
+                    avatar: 1,
+                    banner: 1,
                     following: {$size: "$following"},
                     followers: {$size: "$followers"},
                 },

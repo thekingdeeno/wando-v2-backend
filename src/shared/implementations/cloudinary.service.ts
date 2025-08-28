@@ -16,13 +16,15 @@ class CloudinaryService {
             cloudinary.uploader.upload_stream(
                 {
                 public_id: destinationFileName,
-                folder: `wando-app/${destinationFilePath}`
+                folder: `wando-app/${destinationFilePath}`,
+                secure: true,
                 },
                 (error, uploadResult) => {
                     if (error) throw new Error(error.message);
                     return resolve(uploadResult);
                 }).end(file);
         });
+        
 
         // // Base 64 format upload :-
         // const data = await this.cloudinary.uploader.upload(`data:image/png;base64,${file}`,{public_id: destinationFileName, folder: `wando-app/${destinationFilePath}`});
@@ -31,7 +33,7 @@ class CloudinaryService {
         // const data = await this.cloudinary.uploader.upload(`${file}`,{public_id: destinationFileName, folder: `wando-app/${destinationFilePath}`});
         
         return {
-            url: data.url,
+            url: data.secure_url,
             name: data.display_name,
             path: data.public_id,
             fileType: data.resource_type,

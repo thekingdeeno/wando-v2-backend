@@ -20,14 +20,19 @@ class UserController {
 
     updateUser = async (req: FastifyRequest, res: FastifyReply) => {
         const payload = req.body;
-        const {userId} = req.params as any;
-        const data = await this.userService.updateUser(userId, payload)
+        const data = await this.userService.updateUser(getReq(req, 'userId'), payload)
         return res.status(httpStatus.OK).send(data); 
     }
 
     uploadPfp = async (req: FastifyRequest, res: FastifyReply) => {
         const {uploads} = req.body as any;
         const data = await this.userService.updatePfp(getReq(req, 'userId'), uploads[0]);
+        return res.status(httpStatus.OK).send(data);
+    }
+
+    uploadBanner = async (req: FastifyRequest, res: FastifyReply) => {
+        const {uploads} = req.body as any;
+        const data = await this.userService.updateBanner(getReq(req, 'userId'), uploads[0]);
         return res.status(httpStatus.OK).send(data);
     }
 

@@ -3,8 +3,11 @@ import randomatic from "randomatic";
 
 export const genNumber = (digits: number) => {
     const numString = randomatic('0', digits);
-    const number = parseInt(numString);
-    return number;
+    // const number = parseInt(numString);
+    // if (number) {
+        
+    // }
+    return numString;
 }
 
 export const genAlphaString = (length: number, caps?: boolean) => {

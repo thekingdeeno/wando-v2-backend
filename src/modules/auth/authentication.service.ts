@@ -17,7 +17,8 @@ class AuthenticationService {
 
     async login(payload: LoginForm){
         try {
-            const {email, password} = payload;
+            const {password} = payload;
+            const email = payload.email.toLowerCase()
             const user = await this.userRepository.findUserByEmail(email);
             if (!user) {
                 return{ status: false, message: 'No account found for this email'};

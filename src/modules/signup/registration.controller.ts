@@ -31,9 +31,8 @@ class RegistrationController {
     }
 
     verifyEmailVerifOtp = async(req: FastifyRequest, res: FastifyReply) => {
-        const {email, otp} = req.params as any;
+        const {email, otp} = req.body as any;
         const data = await this.registrationService.verifyEmailVerifOtp(email, otp);
-
         return res.status(httpStatus.OK).send(data);
 ''    };
 };

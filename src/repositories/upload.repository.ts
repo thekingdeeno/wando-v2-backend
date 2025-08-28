@@ -16,5 +16,9 @@ export class UploadRepository extends BaseRepository<Upload, UploadI> {
 
     async deleteOldPfp(userId: string ,newUpload: string){
         return await UploadModel.deleteMany({'uploader': userId, category: 'pfp', 'uploadId': {$ne: newUpload}}).exec();
-    }
+    };
+
+    async deleteOldBanner(userId: string ,newUpload: string){
+        return await UploadModel.deleteMany({'uploader': userId, category: 'banner', 'uploadId': {$ne: newUpload}}).exec();
+    };
 }

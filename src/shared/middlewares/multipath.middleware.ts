@@ -6,17 +6,20 @@ import httpStatus from 'http-status';
 const multipathMiddleware = async (req: any, res: any, next: any) => {
   try {
 
-    const files = await req.parts()
+    const files = await req.parts();
 
     const uploads: any = [];
     let normalBody: any = {};
 
         await(async () => {
           for await (const file of files) {
-            const {filename, fieldname, encoding, mimetype} = file;
+            const {filename, fieldname, encoding, mimetype} = file;            
             if (mimetype === 'text/plain') {
+              console.log(file.fields);
+              
               normalBody[`${fieldname}`] = file.value
             }else{
+              
               const buffer = await file.toBuffer();
               const readableStream = convertBufferToReadableStream(buffer);
               uploads.push({

@@ -17,13 +17,19 @@ const userRoute: FastifyPluginAsync = async (fastify) => {
     })
     fastify.route({
         method: METHODS.PUT,
-        url: '/update/:userId',
+        url: '/update',
         preHandler: [authMiddleware],
         handler: userController.updateUser
     });
-        fastify.route({
+    fastify.route({
         method: METHODS.POST,
-        url: '/update-pfp/:userId',
+        url: '/update-pfp',
+        preHandler: [authMiddleware, multipathMiddleware],
+        handler: userController.uploadPfp
+    })
+    fastify.route({
+        method: METHODS.POST,
+        url: '/update-banner',
         preHandler: [authMiddleware, multipathMiddleware],
         handler: userController.uploadPfp
     })

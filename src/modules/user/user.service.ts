@@ -56,10 +56,33 @@ class UserService {
             
             return{
                 status: true,
+                data: data.record.url,
                 message: 'User PFP updated succeffully'
             }
         } catch (error) {
             console.log(error.message)
+            return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message};
+        }
+    }
+
+    async updateBanner (userId: string, img: any){
+        try {
+            const data: any = await this.uploadService.uploadMedia(userId,'cloudinary', 'banner', {
+                file: img.buffer,
+                fileName: userId,
+                filePath: 'banner'
+            });
+
+            await this.userRepo.updateByUserId(userId, {banner: data.record.url})
+            await this.uploadRepository.deleteOldPfp(userId, data.record.uploadId);
+            
+            return{
+                status: true,
+                data: data.record.url,
+                message: 'User Banner updated succeffully'
+            };
+        } catch (error) {
+            console.log(`updateBanner===>`, userId, error.message)
             return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message};
         }
     }
