@@ -3,6 +3,7 @@ import { bycryptHashString } from '../shared/utils/hash.utils';
 import { genUUID } from '../shared/utils/generate.utils';
 
 export interface User {
+    institutionId: string,
     userId: string,
     reference: string,
     firstName: string,
@@ -55,6 +56,7 @@ const UserSchema = new Schema ({
     twitterId: {type: String},
     instagramId: {type: String},
     githubId: {type: String},
+    institution: {type: SchemaTypes.ObjectId, ref: 'Institution'},
     friends: [{type: SchemaTypes.ObjectId, ref: 'user'}],
     following:[{type: SchemaTypes.ObjectId, ref: 'user'}],
     followers: [{type: SchemaTypes.ObjectId, ref: 'user'}],

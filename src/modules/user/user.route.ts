@@ -31,7 +31,7 @@ const userRoute: FastifyPluginAsync = async (fastify) => {
         method: METHODS.POST,
         url: '/update-banner',
         preHandler: [authMiddleware, multipathMiddleware],
-        handler: userController.uploadPfp
+        handler: userController.uploadBanner
     })
     fastify.route({
         method: METHODS.GET,

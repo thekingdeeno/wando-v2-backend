@@ -15,8 +15,6 @@ const multipathMiddleware = async (req: any, res: any, next: any) => {
           for await (const file of files) {
             const {filename, fieldname, encoding, mimetype} = file;            
             if (mimetype === 'text/plain') {
-              console.log(file.fields);
-              
               normalBody[`${fieldname}`] = file.value
             }else{
               

@@ -128,6 +128,14 @@ class RegistrationService {
             throw {status: false, statusCode: httpStatus.CONFLICT, message: error.message};
         };
     };
+
+    async addInstitution(){
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
 };
 
 export default RegistrationService;

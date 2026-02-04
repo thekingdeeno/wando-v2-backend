@@ -129,4 +129,8 @@ export class UserRepository extends BaseRepository<User, UserI> {
     async deleteUser(userReference: string){
         return await UserModel.deleteOne({userReference}).exec();
     };
+
+    async fetchUsersByInstitution(institutionId: string){
+        return await UserModel.find({institutionId})
+    };
 };
