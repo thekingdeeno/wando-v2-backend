@@ -7,7 +7,7 @@ export interface Institution {
     website: string,
     domain: string,
     country: string,
-    CountryCode: string,
+    countryCode: string,
     city: string
 }
 

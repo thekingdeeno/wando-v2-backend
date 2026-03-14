@@ -7,7 +7,7 @@ const testController = container.resolve(TestController);
 
 const testRoute: FastifyPluginAsync = async (fastify) => {
     fastify.route({
-        method: METHODS.GET,
+        method: METHODS.POST,
         url: '/test',
         handler: testController.test
     })
