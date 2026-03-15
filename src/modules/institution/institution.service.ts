@@ -2,11 +2,12 @@ import { injectable } from "tsyringe";
 import { InstitutonRepository } from "../../repositories/institution.repository";
 import { InstitutionPartialType } from "../../model/institution";
 import { readFile } from "fs/promises";
-import { log } from "console";
+import GeneralCache from "../../repositories/redis/general.cache";
 @injectable()
 class InstitutionService {
     constructor(
-        private readonly institutionRepo: InstitutonRepository
+        private readonly institutionRepo: InstitutonRepository,
+        private readonly generalCache: GeneralCache
     ){}
 
     async fetchInstitution(id: string){
@@ -25,20 +26,39 @@ class InstitutionService {
         }
     }
 
-    async fetchInstitutions(page?: number, number?: number){
+
+    async fetchInstitutions(queries: object, page?: number, number?: number){
         try {
-            const data = await this.institutionRepo.fetchInstitutions(page, number);
+            const data = await this.institutionRepo.fetchInstitutions(queries, page, number);
             return{
                 status: true,
-                mesasge: 'Institutions fetch successfully'
+                mesasge: 'Institutions search successfully',
+                data
             }
         } catch (error: any) {
             console.log(error)
             return {
-                status: false, message: 'failed to fetch institutions'
+                status: false, message: 'failed to search institutions'
             };
-        };
-    };
+        }
+    }
+    
+
+    async fetchInstitutionCountries(){
+        try {
+            const cachedData = await this.generalCache.getInstitutionCountries();
+            return{
+                status: true,
+                message: 'Institution countries fetched successfully',
+                data: cachedData
+            }
+        } catch (error) {
+            console.log(error)
+            return {
+                status: false, message: 'failed to search institutions'
+            };
+        }
+    }
 
 
     async seedInstitutions(start: number = 0, batch: number = 1000){

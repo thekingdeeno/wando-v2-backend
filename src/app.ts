@@ -11,6 +11,7 @@ import authenticationRoute from "./modules/auth/authentication.route";
 import userRoute from "./modules/user/user.route";
 import multipart from "@fastify/multipart";
 import postRoute from "./modules/post/post.route";
+import institutionRoute from "./modules/institution/institution.route";
 class App {
   private fastify: FastifyInstance;
 
@@ -28,6 +29,7 @@ class App {
     this.fastify.register(testRoute, {prefix: RouteVersion['v1.test']});
     this.fastify.register(userRoute, {prefix: RouteVersion['v1.user']});
     this.fastify.register(postRoute, {prefix: RouteVersion['v1.post']});
+    this.fastify.register(institutionRoute, {prefix: RouteVersion['v1.institution']})
   }
 
   public getInstance(){

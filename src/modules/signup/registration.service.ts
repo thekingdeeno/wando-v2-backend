@@ -129,6 +129,14 @@ class RegistrationService {
         };
     };
 
+    async fetchInstitutions(){
+        try {
+            
+        } catch (error) {
+            
+        }
+    }
+
     async addInstitution(){
         try {
             

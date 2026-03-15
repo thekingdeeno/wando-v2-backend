@@ -19,7 +19,6 @@ class RedisService {
 
     public async setDataWithExpiry(key: string, value: string, seconds: number, lock?: boolean){
         try {
-            // let E
             return (await redis).set(key, value, {EX: seconds} )
         } catch (error: any) {
             console.log(`Error::RedissetDataWithExpiry ===> ${error.message} || could not set with expiry`);
