@@ -12,7 +12,8 @@ class TestController {
 
     test = async (req: FastifyRequest, res: FastifyReply) => {
         const { start, batch } = req.body as any;
-        const data = await this.testService.seedInstitutions(start, batch);
+        // const data = await this.testService.seedInstitutions(start, batch);
+        const data = await this.testService.test();
         return res.status(httpStatus.OK).send(data);
     }
 }

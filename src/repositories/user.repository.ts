@@ -33,6 +33,7 @@ export class UserRepository extends BaseRepository<User, UserI> {
                     banner: 1,
                     following: {$size: "$following"},
                     followers: {$size: "$followers"},
+                    isOperational: 1,
                 },
             },
         ])

@@ -11,8 +11,12 @@ class TestService {
     ) {}
 
     async test(){
-        const content = await readFile('institutions.base.json', 'utf-8')
-        console.log(JSON.parse(content)[0]);
+        console.log("test service called");
+        
+        return{
+            status: true,
+            message: 'webhook received',
+        }
     }
 
    public async seedInstitutions(start: number, batch: number){
