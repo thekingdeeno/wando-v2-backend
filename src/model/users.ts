@@ -43,7 +43,7 @@ const UserSchema = new Schema ({
     firstName: {type: String},
     lastName: {type: String},
     email: {type: String, required: true, unique: true},
-    phoneNumber: {type: String, required: true, unique: true},
+    phoneNumber: {type: String, required: false, unique: true},
     username: {type: String, required: false, unique: true},
     dateOfBirth: {type: Date, immutable: true},
     password: String,
@@ -64,7 +64,7 @@ const UserSchema = new Schema ({
     chats: [{type: SchemaTypes.ObjectId, ref: 'chat'}],
     likes: [{type: SchemaTypes.ObjectId, ref: 'post'}],
     saves: [{type: SchemaTypes.ObjectId, ref: 'post'}],
-    isVerified: {type: Boolean, default: false},
+    isVerified: {type: Boolean, default: true},
     isOperational: {type: Boolean, default: false},
     createdAt: {type: Date, default: ()=> Date.now(), immutable: true},
     updatedAt: {type: Date, default: ()=> Date.now()},
@@ -75,7 +75,6 @@ UserSchema.pre('save', async function(){
     this.userReference = genUUID();
     this.firstName = this.firstName.toLowerCase();
     this.lastName = this.lastName.toLowerCase();
-    this.username = this.username.toLowerCase();
     this.email = this.email.toLowerCase();
     this.userId = this._id.toString();
 });

@@ -9,6 +9,15 @@ class UserCache {
         private readonly redisService: RedisService,
     ) {}
 
+    setPartialUser = async (firstName: string, lastName: string, email: string, otp: string) => {
+        const data = JSON.stringify({firstName, lastName, otp})
+        return await this.redisService.setDataWithExpiry(`${pathPrefix}:new-partial-user:${email}`, data, 60 * 10)
+    }
+
+    getPartialUser = async (email: string) => {
+        return await this.redisService.getData(`${pathPrefix}:new-partial-user:${email}`)
+    }
+
     setEmailOTP = async (email: string, otp: string) => {
         return await this.redisService.setDataWithExpiry(`${pathPrefix}:email-otp:${email}`, otp, 60*10);
     };

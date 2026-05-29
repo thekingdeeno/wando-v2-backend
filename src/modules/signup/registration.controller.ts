@@ -9,11 +9,19 @@ class RegistrationController {
         private readonly registrationService: RegistrationService,
     ){};
 
-    registerUser = async (req: FastifyRequest, res: FastifyReply) => {
-        const payload = req.body;
-        
-        const data = await this.registrationService.registerUser(payload);
+    saveUserToCache = async (req: FastifyRequest, res: FastifyReply) => {
+        const data = await this.registrationService.saveUserToCache(req.body);
+        return res.status(httpStatus.OK).send(data);
+    }
 
+    verifyEmailVerifOtp = async (req: FastifyRequest, res: FastifyReply) => {
+        const {email, otp} = req.body as any;
+        const data = await this.registrationService.verifyEmailVerifOtp(email, otp);
+        return res.status(httpStatus.OK).send(data);
+    }
+
+    registerUser = async (req: FastifyRequest, res: FastifyReply) => {
+        const data = await this.registrationService.registerUser(req.body);
         return res.status(httpStatus.OK).send(data);
     };
 
@@ -22,19 +30,6 @@ class RegistrationController {
         const data = await this.registrationService.checkExisting(fieldName, value);
         return res.status(httpStatus.OK).send(data);
     };
-
-    sendEmailVerifOtp = async(req: FastifyRequest, res: FastifyReply) => {
-        const {email} = req.params as any;
-        const data =  await this.registrationService.sendEmailVerifOtp(email);
-
-        return res.status(httpStatus.OK).send(data);
-    }
-
-    verifyEmailVerifOtp = async(req: FastifyRequest, res: FastifyReply) => {
-        const {email, otp} = req.body as any;
-        const data = await this.registrationService.verifyEmailVerifOtp(email, otp);
-        return res.status(httpStatus.OK).send(data);
-''    };
 };
 
 export default RegistrationController

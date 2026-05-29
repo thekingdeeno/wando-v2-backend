@@ -1,7 +1,7 @@
 import { injectable } from "tsyringe";
 import RedisService from "../../shared/implementations/cache/redis/redis.service";
-import { readFile } from "fs/promises";
 import InstitutionService from "../institution/institution.service";
+
 
 @injectable()
 class TestService {
@@ -11,10 +11,10 @@ class TestService {
     ) {}
 
     async test(){
-        console.log("test service called");
         
         return{
             status: true,
+            // data: response,
             message: 'webhook received',
         }
     }

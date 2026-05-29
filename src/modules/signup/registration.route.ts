@@ -8,6 +8,16 @@ const registrationController = container.resolve(RegistrationController)
 const registrationRoute: FastifyPluginAsync = async (fastify) => {
     fastify.route({
         method: METHODS.POST,
+        url: '/partial',
+        handler: registrationController.saveUserToCache
+    })
+    fastify.route({
+        method: METHODS.POST,
+        url: '/verify-email-otp',
+        handler: registrationController.verifyEmailVerifOtp
+    })
+    fastify.route({
+        method: METHODS.POST,
         url: '/signup',
         handler: registrationController.registerUser
     })
@@ -16,16 +26,6 @@ const registrationRoute: FastifyPluginAsync = async (fastify) => {
         url: '/check-existing',
         handler: registrationController.checkExisting
     });
-    fastify.route({
-        method: METHODS.GET,
-        url: '/email-verif-otp/:email',
-        handler: registrationController.sendEmailVerifOtp
-    });
-    fastify.route({
-        method: METHODS.GET,
-        url: "/verify-email-otp/:email/:otp",
-        handler: registrationController.verifyEmailVerifOtp
-    })
 }
 
 export default registrationRoute;
