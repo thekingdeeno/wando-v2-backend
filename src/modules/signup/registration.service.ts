@@ -6,6 +6,8 @@ import { genNumber } from "../../shared/utils/generate.utils";
 import UserCache from "../../repositories/redis/user.cache";
 import MessagingService from "../../shared/services/messaging.service";
 import { UserPartialType } from "../../model/users";
+import jwt from "jsonwebtoken";
+import { jwtConfig } from "../../config/env.config";
 
 @injectable()
 class RegistrationService {
@@ -17,9 +19,9 @@ class RegistrationService {
 
     async saveUserToCache(payload: ObjectLiteral){
         try {
-            const {status, message} = await this.checkEmailAvailability(payload.email);
+            const {status} = await this.checkEmailAvailability(payload.email);
             if (!status) {
-                throw new Error(message);
+                return {status: false, message: 'Email is already in use'};
             }
             const {firstName, lastName, email} = payload;
             email.toLowerCase(); firstName.toLowerCase(); lastName.toLowerCase();
@@ -77,11 +79,12 @@ class RegistrationService {
             const newPayload = {password: payload.password, firstName, lastName, email: payload.email} as UserPartialType;    
 
             const newUser = await this.userRepo.createUser(newPayload);
-
             if (!newUser) throw new Error('Failed to create new user, please try again');
+            const accessToken = jwt.sign({email: newUser.email, id: newUser.userId}, jwtConfig.secret)
             return{
                 status: true,
                 message: 'User created successfuly',
+                data: {email: user.email, userId: user.userId, accessToken}
             };
         } catch (err: any) {
             console.log(err.message)
@@ -92,13 +95,13 @@ class RegistrationService {
     async checkExisting(fieldName: string, value: string){
         switch (fieldName) {
             case 'email':
-                await this.checkEmailAvailability(value);
+                return await this.checkEmailAvailability(value);
                 break;
                 case 'phoneNumber':
-                await this.checkPhoneNoAvailability(value);
+                return await this.checkPhoneNoAvailability(value);
                 break;
                 case 'username':
-                await this.checkUsernameAvailability(value);
+                return await this.checkUsernameAvailability(value);
                 break;
             default:
                 break;
@@ -133,11 +136,12 @@ class RegistrationService {
         try {
             const existing = await this.userRepo.findUserByUsername(username);
             if (existing) {
-                throw new Error('A user with this username already exists');
+                return {status: false, message: 'Username is taken'};
             };
+            return {status: true, message: 'Username is available'}
         } catch (error) {
             console.log(error.message);
-            throw {status: false, statusCode: httpStatus.CONFLICT, message: error.message};
+            throw {status: false, statusCode: httpStatus.CONFLICT, message: 'Failed to check username availability, please try again'};
         };
     };
 };

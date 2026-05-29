@@ -60,4 +60,10 @@ export const database = {
     api_secret: process.env.CLOUDINARY_API_SECRET
   }
 
+
+  export const jwtConfig = {
+    secret: process.env.JWT_SECRET as string,
+    // expiresIn: process.env.JWT_EXPIRES_IN || '1d',
+  };
+
   export const cloudStorageHandler = process.env.CLOUD_STORAGE_HANDLER

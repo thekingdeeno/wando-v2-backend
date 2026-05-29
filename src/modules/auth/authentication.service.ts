@@ -5,6 +5,7 @@ import { bcryptCompareHashedString } from "../../shared/utils/hash.utils";
 import httpStatus from 'http-status'
 import RegistrationService from "../signup/registration.service";
 import jwt from "jsonwebtoken";
+import { jwtConfig } from "../../config/env.config";
 
 @injectable()
 class AuthenticationService {
@@ -27,7 +28,7 @@ class AuthenticationService {
             if (!passCheck) {
                 return{ status: false, message: 'Incorrect Password'};
             };
-            const accessToken = jwt.sign({email: user.email, id: user.userId}, 'somejwtsecret')
+            const accessToken = jwt.sign({email: user.email, id: user.userId}, jwtConfig.secret)
             return{
                 status: true,
                 message: 'User Logged In Successfuly',

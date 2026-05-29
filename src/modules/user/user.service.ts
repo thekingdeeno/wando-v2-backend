@@ -29,6 +29,27 @@ class UserService {
         };
     }
 
+    async fetchUserByUsername (username: string){
+        try {
+            const user = await this.userRepo.findUserByUsername(username);
+            if (!user) {
+                return {
+                    status: false,
+                    message: 'User not found'
+                }
+            };
+            return{
+                status: true,
+                data: user,
+                message: 'User Found'
+            };
+
+        } catch (error) {
+            console.log(error.message)
+            return {status: false, statusCode: httpStatus.BAD_REQUEST, message: error.message};
+        };
+    }
+
     async updateUser (userId: string, payload: UserPartialType){
         try {
             const {acknowledged} = await this.userRepo.updateByUserId(userId, payload)
