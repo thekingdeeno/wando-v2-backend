@@ -12,6 +12,7 @@ import userRoute from "./modules/user/user.route";
 import multipart from "@fastify/multipart";
 import postRoute from "./modules/post/post.route";
 import institutionRoute from "./modules/institution/institution.route";
+import uploadRoute from "./modules/upload/upload.route";
 class App {
   private fastify: FastifyInstance;
 
@@ -30,6 +31,7 @@ class App {
     this.fastify.register(userRoute, {prefix: RouteVersion['v1.user']});
     this.fastify.register(postRoute, {prefix: RouteVersion['v1.post']});
     this.fastify.register(institutionRoute, {prefix: RouteVersion['v1.institution']})
+    this.fastify.register(uploadRoute, {prefix: RouteVersion['v1.upload']})
   }
 
   public getInstance(){

@@ -1,6 +1,7 @@
 import { injectable } from 'tsyringe';
 import CloudinaryService from "../implementations/cloudinary.service"
 import { UploadRepository } from "../../repositories/upload.repository";
+import { UploadCategoryType } from '../types/upload.type';
 
 
 @injectable()
@@ -10,7 +11,7 @@ class UploadService {
         private uploadRepository: UploadRepository,
     ){}
 
-    public async uploadMedia(userId: string, handler: string, category: string, payload: any){
+    public async uploadMedia(userId: string, handler: string, category: UploadCategoryType, payload: any){
         try {
             
             if (handler === 'cloudinary') {
@@ -37,6 +38,7 @@ class UploadService {
                 return{status: true, record}
             };
         } catch (error: any) {
+            console.log(`uplaodMedia()===> ${JSON.stringify({userId, handler, category, payload, error})}`)
             return{
                 status: false,
                 message: error.message
@@ -56,6 +58,15 @@ class UploadService {
                 status: false,
                 message: error.message
             };
+        }
+    }
+
+
+    public async fetchUplaodToken(userId: string){
+        try {
+            
+        } catch (error) {
+            
         }
     }
 

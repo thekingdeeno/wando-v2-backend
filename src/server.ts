@@ -1,6 +1,5 @@
 import Application from './app';
 import { server } from './config/env.config'
-
 const application: any = new Application();
 
 process
@@ -16,4 +15,3 @@ process
 
 application
   .listen(server.port, server.address);
-    

@@ -1,10 +1,11 @@
 import { Document, Schema, SchemaTypes, model, Model } from 'mongoose';
+import { UploadCategoryType } from '../shared/types/upload.type';
 
 
 export interface Upload {
     uploadId: string,
     uploader: string,
-    category: string,
+    category: UploadCategoryType,
     fileType: string,
     fileFormat: string,
     host: string,
