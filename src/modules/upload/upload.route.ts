@@ -13,6 +13,20 @@ const uploadRoute: FastifyPluginAsync = async (fastify) => {
         preHandler: [authMiddleware],
         handler: uploadController.requestUploadToken
     });
+
+    fastify.route({
+        method: METHODS.POST,
+        url: '/request-upload-tokens',
+        preHandler: [authMiddleware],
+        handler: uploadController.requestUploadTokens
+    });
+
+    fastify.route({
+        method: METHODS.POST,
+        url: '/confirm-upload',
+        preHandler: [authMiddleware],
+        handler: uploadController.confirmUpload
+    });
 }
 
 export default uploadRoute

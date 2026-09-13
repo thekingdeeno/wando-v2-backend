@@ -11,6 +11,7 @@ export interface Upload {
     host: string,
     path: string,
     url: string,
+    metadata?: string,
     fileName: string,
     createdAt: Date,
     updatedAt: Date,
@@ -23,7 +24,7 @@ const UploadSchema = new Schema({
     uploader: {
         type: SchemaTypes.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
     },
     category: {type: String, required: true},
     fileType: {type: String},
@@ -32,6 +33,7 @@ const UploadSchema = new Schema({
     path: {type: String, required: true,},
     url: {type: String, required: true,},
     fileName: {type: String},
+    metadata: {type: String},
     createdAt: {type: Date, default: ()=> Date.now(), immutable: true},
     updatedAt: {type: Date, default: ()=> Date.now()},
 })
