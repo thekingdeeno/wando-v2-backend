@@ -25,22 +25,32 @@ class PostService {
             }
             const {uploads, text, userId, ...rest} = payload;
             if (!uploads && !text) throw new Error('No content in post');
-            const mediaUrls = [];
-            for (let i = 0; i < uploads.length; i++) {
-                const file = uploads[i];
-                const date = new Date();
-                const timestamp = (Math.round(date.getTime()/1000));
-                const upload = {
-                    file: file.buffer,
-                    fileName: `${timestamp}${genAlphaNum(10)}`,
-                    filePath: 'posts'
-                }
-                const response = await this.uploaadService.uploadMedia(userId, cloudStorageHandler, 'post' ,upload);
-                if (response.status) {
-                    mediaUrls.push(response.record.url);
-                }
-            }
-            const post = await this.postRepository.createPost({text, userId, ...rest, mediaUrls});
+            // TODO: Update post upload flow 
+            // const mediaUrls = [];
+            // for (let i = 0; i < uploads.length; i++) {
+            //     const file = uploads[i];
+            //     const date = new Date();
+            //     const timestamp = (Math.round(date.getTime()/1000));
+            //     const upload = {
+            //         file: file.buffer,
+            //         fileName: `${timestamp}${genAlphaNum(10)}`,
+            //         filePath: 'posts'
+            //     }
+            //     const response = await this.uploaadService.uploadMedia(userId, cloudStorageHandler, 'post' ,upload);
+            //     if (response.status) {
+            //         mediaUrls.push(response.record.url);
+            //     }
+            // }
+            // Add default values for new fields
+            const postPayload = {
+                text, 
+                userId, 
+                ...rest, 
+                // mediaUrls,
+                status: 'published' as 'draft' | 'published' | 'deleted' | 'archived',
+                visibility: 'public' as 'public' | 'private' | 'followers' | 'custom'
+            };
+            const post = await this.postRepository.createPost(postPayload);
             if (!post) throw new Error('Failed to create post record');
             if (post.quoteId) {
                 await this.postRepository.addRepost(post.quoteId, userId);

@@ -14,6 +14,20 @@ export interface Post {
     saves: string[],
     shares: string[],
     reposts: string[],
+    status: 'draft' | 'published' | 'deleted' | 'archived',
+    visibility: 'public' | 'private' | 'followers' | 'custom',
+    location?: {
+        latitude: number,
+        longitude: number,
+        name?: string
+    },
+    contentWarning?: string,
+    engagementMetrics?: {
+        viewCount: number,
+        likeCount: number,
+        commentCount: number,
+        shareCount: number
+    },
     createdAt: Date,
     updatedAt: Date
 }
@@ -58,6 +72,28 @@ const PostSchema = new Schema({
             type: SchemaTypes.ObjectId,
             ref: 'User',        
     }],
+    status: {
+        type: String,
+        enum: ['draft', 'published', 'deleted', 'archived'],
+        default: 'published'
+    },
+    visibility: {
+        type: String,
+        enum: ['public', 'private', 'followers', 'custom'],
+        default: 'public'
+    },
+    location: {
+        latitude: Number,
+        longitude: Number,
+        name: String
+    },
+    contentWarning: String,
+    engagementMetrics: {
+        viewCount: {type: Number, default: 0},
+        likeCount: {type: Number, default: 0},
+        commentCount: {type: Number, default: 0},
+        shareCount: {type: Number, default: 0}
+    },
     createdAt: {
         type: Date,
         default: ()=> Date.now(),
